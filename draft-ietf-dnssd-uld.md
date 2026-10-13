@@ -185,13 +185,16 @@ All active ULD servers MUST advertise their presence using mDNS, as a DNS-SD ser
 
 The server MAY advertise other address records for its hostname (e.g. AAAA records with routable addresses); these are not relevant for ULD clients.
 
-Because a ULD service instance is described by a single SRV record, its priority and weight fields SHOULD be set to zero per Section 5 of {{!RFC6763}}. Selection among ULD servers is based on the numeric value of the `pri` TXT key; lower priority values are preferred. Servers MUST advertise a priority based on their deployment mode and capabilities:
+Because a ULD service instance is described by a single SRV record, its priority and weight fields SHOULD be set to zero per Section 5 of {{!RFC6763}}. Selection among ULD servers is based on the numeric value of the `pri` TXT key; lower priority values are preferred. Servers advertise a priority based on their deployment mode and capabilities:
 
 - 0: Infrastructure server
-- 100: Non-constrained ad-hoc server on a wired network link
-- 200: Non-constrained ad-hoc server on a Wi-Fi link
-- 1000: Constrained ad-hoc server, but otherwise well able to provide service
-- 65535: Ad-hoc server that can provide service if needed, but should not be preferred
+- 2000-2099: Unconstrained ad-hoc server on a wired network link
+- 4000-4099: Unconstrained ad-hoc server on a Wi-Fi link
+- 6000-6099: Ad-hoc server with limited resources (e.g. CPU, memory, or network interface quality)
+
+An ad-hoc server's priority SHOULD be chosen from the range reflecting its capabilities. Priority values outside of these ranges are reserved for future use; clients compare all priority values numerically regardless (see {{client-behavior}}).
+
+The ranges define a coarse preference ordering between server categories; the choice of priority value within the range is implementation-specific, and is intended for ordering an implementation's own devices relative to each other (e.g. based on specific hardware capabilities). Implementations that have no basis for such a choice SHOULD use an offset of 50 within the range. Because a change in priority triggers discovery work for clients and may cause them to migrate between servers, servers SHOULD base their priority on stable properties.
 
 ### Infrastructure RA Option
 
@@ -227,7 +230,7 @@ Clients MAY connect to the ULD server over IPv4 using an on-link address. When a
 
 The ideal deployment state for ULD is a single infrastructure server on each link, providing streamlined discovery for all clients.
 
-A device that implements ULD MAY provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it MUST advertise as an ad-hoc server with a priority reflecting its capabilities.
+A device that implements ULD MAY provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it advertises as an ad-hoc server with a priority as described in {{advertisement}}. A device SHOULD only provide ad-hoc ULD service if it is expected to remain available on the link for extended periods (e.g. because it is mains-powered and does not normally sleep), and has sufficient resources to serve all clients on the link.
 
 In managed networks, the infrastructure ULD server designation MUST be enabled via explicit configuration by the network operator. Where multiple managed routers are present on a link, the operator MUST ensure that at most one advertises the ULD RA option.
 
