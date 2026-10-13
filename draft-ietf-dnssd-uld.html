@@ -1398,6 +1398,11 @@ li > p:last-of-type:only-child {
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-service-name-registration" class="internal xref">Service Name Registration</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-references" class="internal xref">References</a></p>
@@ -1665,10 +1670,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
           <h4 id="name-server-advertisement">
 <a href="#section-3.3.1" class="section-number selfRef">3.3.1. </a><a href="#name-server-advertisement" class="section-name selfRef">Server Advertisement</a>
           </h4>
-<p id="section-3.3.1-1">All active ULD servers <span class="bcp14">MUST</span> advertise their presence using mDNS, as a DNS-SD service instance of type <code>&lt;uld-service-name&gt;._tcp</code>. The service advertisement consists of:<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.1-1">All active ULD servers <span class="bcp14">MUST</span> advertise their presence using mDNS, as a DNS-SD service instance of type <code>_uld._tcp</code>. The service advertisement consists of:<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.3.1-2.1">
-              <p id="section-3.3.1-2.1.1">A PTR record at <code>&lt;uld-service-name&gt;._tcp.local.</code> pointing to the service instance name<a href="#section-3.3.1-2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-3.3.1-2.1.1">A PTR record at <code>_uld._tcp.local.</code> pointing to the service instance name<a href="#section-3.3.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.3.1-2.2">
               <p id="section-3.3.1-2.2.1">An SRV record for the service instance, pointing to the server's hostname and port 53<a href="#section-3.3.1-2.2.1" class="pilcrow">¶</a></p>
@@ -1787,7 +1792,57 @@ unless that server is also the ULD server for the link in question.<a href="#sec
       <h2 id="name-iana-considerations">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-8-1">Allocate <code>&lt;uld-service-name&gt;</code>, "_uld" is preferred<a href="#section-8-1" class="pilcrow">¶</a></p>
+<div id="service-name-registration">
+<section id="section-8.1">
+        <h3 id="name-service-name-registration">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-service-name-registration" class="section-name selfRef">Service Name Registration</a>
+        </h3>
+<p id="section-8.1-1">IANA is requested to add the following entry to the "Service Name and Transport Protocol Port Number Registry", using the fields required by Section 8.1.1 of <span>[<a href="#RFC6335" class="cite xref">RFC6335</a>]</span>:<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Field Name</th>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Service Name</td>
+              <td class="text-left" rowspan="1" colspan="1">uld</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Transport Protocol</td>
+              <td class="text-left" rowspan="1" colspan="1">tcp</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Assignee</td>
+              <td class="text-left" rowspan="1" colspan="1">IESG &lt;iesg@ietf.org&gt;</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Contact</td>
+              <td class="text-left" rowspan="1" colspan="1">IETF Chair &lt;chair@ietf.org&gt;</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Description</td>
+              <td class="text-left" rowspan="1" colspan="1">Unicast Local Discovery</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Reference</td>
+              <td class="text-left" rowspan="1" colspan="1">This document</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Port Number</td>
+              <td class="text-left" rowspan="1" colspan="1">None</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Assignment Notes</td>
+              <td class="text-left" rowspan="1" colspan="1">Defined TXT keys: pri</td>
+            </tr>
+          </tbody>
+        </table>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-combined-references">
@@ -1820,6 +1875,10 @@ unless that server is also the ULD server for the link in question.<a href="#sec
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6335">[RFC6335]</dt>
+        <dd>
+<span class="refAuthor">Cotton, M.</span>, <span class="refAuthor">Eggert, L.</span>, <span class="refAuthor">Touch, J.</span>, <span class="refAuthor">Westerlund, M.</span>, and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"Internet Assigned Numbers Authority (IANA) Procedures for the Management of the Service Name and Transport Protocol Port Number Registry"</span>, <span class="seriesInfo">BCP 165</span>, <span class="seriesInfo">RFC 6335</span>, <span class="seriesInfo">DOI 10.17487/RFC6335</span>, <time datetime="2011-08" class="refDate">August 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6335">https://www.rfc-editor.org/rfc/rfc6335</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6762">[RFC6762]</dt>
         <dd>

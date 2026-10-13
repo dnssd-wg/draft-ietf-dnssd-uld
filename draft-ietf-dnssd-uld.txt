@@ -92,6 +92,7 @@ Table of Contents
    6.  Security Considerations
    7.  Domain Name Reservation Considerations
    8.  IANA Considerations
+     8.1.  Service Name Registration
    9.  References
      9.1.  Normative References
      9.2.  Informative References
@@ -416,11 +417,11 @@ Table of Contents
 3.3.1.  Server Advertisement
 
    All active ULD servers MUST advertise their presence using mDNS, as a
-   DNS-SD service instance of type <uld-service-name>._tcp.  The service
-   advertisement consists of:
+   DNS-SD service instance of type _uld._tcp.  The service advertisement
+   consists of:
 
-   *  A PTR record at <uld-service-name>._tcp.local. pointing to the
-      service instance name
+   *  A PTR record at _uld._tcp.local. pointing to the service instance
+      name
 
    *  An SRV record for the service instance, pointing to the server's
       hostname and port 53
@@ -594,7 +595,33 @@ Table of Contents
 
 8.  IANA Considerations
 
-   Allocate <uld-service-name>, "_uld" is preferred
+8.1.  Service Name Registration
+
+   IANA is requested to add the following entry to the "Service Name and
+   Transport Protocol Port Number Registry", using the fields required
+   by Section 8.1.1 of [RFC6335]:
+
+           +====================+=============================+
+           | Field Name         | Value                       |
+           +====================+=============================+
+           | Service Name       | uld                         |
+           +--------------------+-----------------------------+
+           | Transport Protocol | tcp                         |
+           +--------------------+-----------------------------+
+           | Assignee           | IESG <iesg@ietf.org>        |
+           +--------------------+-----------------------------+
+           | Contact            | IETF Chair <chair@ietf.org> |
+           +--------------------+-----------------------------+
+           | Description        | Unicast Local Discovery     |
+           +--------------------+-----------------------------+
+           | Reference          | This document               |
+           +--------------------+-----------------------------+
+           | Port Number        | None                        |
+           +--------------------+-----------------------------+
+           | Assignment Notes   | Defined TXT keys: pri       |
+           +--------------------+-----------------------------+
+
+                                 Table 1
 
 9.  References
 
@@ -627,6 +654,13 @@ Table of Contents
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC6335]  Cotton, M., Eggert, L., Touch, J., Westerlund, M., and S.
+              Cheshire, "Internet Assigned Numbers Authority (IANA)
+              Procedures for the Management of the Service Name and
+              Transport Protocol Port Number Registry", BCP 165,
+              RFC 6335, DOI 10.17487/RFC6335, August 2011,
+              <https://www.rfc-editor.org/rfc/rfc6335>.
 
    [RFC6762]  Cheshire, S. and M. Krochmal, "Multicast DNS", RFC 6762,
               DOI 10.17487/RFC6762, February 2013,
