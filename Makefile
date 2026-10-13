@@ -1,3 +1,7 @@
+# Use the default stylesheet
+override XML2RFC_CSS :=
+
+# Template Makefile
 LIBDIR := lib
 -include $(LIBDIR)/main.mk
 

@@ -12,7 +12,7 @@ This is the working area for the IETF [DNSSD Working Group](https://datatracker.
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](CONTRIBUTING.md).
 
 The contributing file also has tips on how to make contributions, if you don't already know how to do that.
 
