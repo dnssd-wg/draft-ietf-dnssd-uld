@@ -179,37 +179,72 @@ All active ULD servers MUST advertise their presence using mDNS, as a DNS-SD ser
 
 - A PTR record at `_uld._tcp.local.` pointing to the service instance name
 - An SRV record for the service instance, pointing to the server's hostname and port 53
-- A TXT record for the service instance, containing a `pri` key indicating the server's priority as defined below
+- A TXT record for the service instance, containing
+  - a `pri` key encoding the server's priority as a US-ASCII decimal number in the range 0-65535 (see {{priority}})
+  - a `seq` key encoding the server's sequence number as a US-ASCII decimal number in the range 0-4294967295 (see {{sequence}})
+- At least one AAAA record for the server's hostname with a link-local IPv6 address
+- At least one A record for the server's hostname with an on-link IPv4 address, if the server accepts ULD client connections over IPv4 (see {{dual-stack}})
 
-The SRV priority and weight fields SHOULD be set to zero and MUST be ignored by clients. Per Section 5 of {{!RFC6763}}, these fields are used for selecting among multiple SRV records for a single service instance, which does not apply here; additionally, mDNS APIs do not typically expose them to applications.
+The server MAY advertise other address records for its hostname (e.g. AAAA records with routable addresses); these are not relevant for ULD clients.
 
-Selection among ULD servers is based on the numeric value of the `pri` TXT key (lower priority values are preferred). If there are multiple servers with the same priority, the one with the numerically lowest IPv6 link-local address MUST be preferred. Services MUST advertise a priority based on their deployment mode and capabilities:
+Because a ULD service instance is described by a single SRV record, its priority and weight fields SHOULD be set to zero per Section 5 of {{!RFC6763}}, and MUST be ignored when processing an advertisement.
+Advertisements lacking a priority, sequence number, or an IPv6 link-local address are invalid and MUST be ignored.
+
+#### Server Priority {#priority}
+
+Servers advertise a priority based on their deployment mode and capabilities:
 
 - 0: Infrastructure server
-- 100: Non-constrained ad-hoc server on a wired network link
-- 200: Non-constrained ad-hoc server on a Wi-Fi link
-- 1000: Constrained ad-hoc server, but otherwise well able to provide service
-- 65535: Ad-hoc server that can provide service if needed, but should not be preferred
+- 2000-2099: Unconstrained ad-hoc server on a wired network link
+- 4000-4099: Unconstrained ad-hoc server on a Wi-Fi link
+- 6000-6099: Ad-hoc server with limited resources (e.g. CPU, memory, or network interface quality)
+
+An ad-hoc server's priority SHOULD be chosen from the range reflecting its capabilities. Priority values outside of these ranges are reserved for future use; clients compare all priority values numerically regardless (see {{client-behavior}}).
+
+The ranges define a coarse preference ordering between server categories; the choice of priority value within the range is implementation-specific, and is intended for ordering an implementation's own devices relative to each other (e.g. based on specific hardware capabilities). Implementations that have no basis for such a choice SHOULD use an offset of 50 within the range. Because a change in priority triggers discovery work for clients and may cause them to migrate between servers, servers SHOULD base their priority on stable properties.
+
+#### Sequence Numbers {#sequence}
+
+Each server advertises a sequence number that allows clients to order servers by age, so that a server that has been available for longer is preferred over one that has just appeared, and to detect when a server has restarted. Sequence numbers are unsigned 32-bit integers forming a ring modulo 2^32. The *distance* from sequence number A to B is calculated as `(B - A) mod 2^32`.
+
+Given the set of distinct sequence numbers of all servers discovered on a link, the *oldest* and *newest* sequence numbers are determined as follows: If the set contains only one value, it is trivially both oldest and newest. Otherwise, the values are sorted in ascending order and the gap (i.e. the distance) from each value to the next is calculated, with the gap from the last value wrapping around to the first. The value at the start of the largest gap is the *newest* sequence number, and the value at the end of it is the *oldest*. If multiple gaps are equally large, the one starting at the numerically lowest value is used.
+
+The *rank* of an ad-hoc server is then calculated as the distance from the oldest sequence number to the server's sequence number: a lower rank indicates an older server. Infrastructure servers are not ordered by age and always have rank 0, regardless of their sequence number.
+
+A server MUST choose its sequence number when it starts up or otherwise loses its registration state, after browsing for other ULD servers on the link, and MUST NOT change it otherwise. If no other servers are found, the server chooses a value uniformly at random. Otherwise, it chooses `(newest + 1 + R) mod 2^32`, where R is a random value in the range 0-65535, making it the newest server. The random component makes it unlikely that a restarted server ends up with its previous sequence number.
+
+Servers that choose sequence numbers independently (e.g. after a power outage, or when previously separate links are joined) can end up spread around the ring without a single dominant gap. In a state where several gaps have almost equal sizes, departure or addition of servers can cause the largest gap and therefore the oldest server designation to jump. To reduce the likelihood of this happening, if the second-largest gap is larger than half the largest gap, a server SHOULD instead choose `(start + floor(gap / 2) + R) mod 2^32`, where start and gap describe the second-largest gap.
 
 ### Infrastructure RA Option
 
-An infrastructure ULD server MUST additionally advertise its presence by including the ULD RA option in its IPv6 Router Advertisements. The presence of the RA option signals that the sender of the RA is a ULD server, and the server's link-local source address in the RA is the address clients use to reach it.
+An infrastructure ULD server MUST additionally advertise its presence by including the ULD RA option in its IPv6 Router Advertisements. The presence of the RA option signals that the sender of the RA is a ULD server. The RA source address MUST match the numerically lowest link-local address the server advertises in its AAAA records. This ensures that clients can directly use this address to reach the server and for the tiebreaker comparison defined in {{client-behavior}}.
 
 This additional advertisement mechanism serves a dual purpose: It provides IPv6 clients with a faster discovery path that does not rely on mDNS, and it enables the designation of the infrastructure ULD server to be protected by RA Guard {{?RFC6105}}. In order for this protection to be effective, IPv6-capable clients MUST use the RA option for infrastructure server discovery, either exclusively or to verify the infrastructure designation of a server discovered via DNS-SD. The DNS-SD advertisement remains necessary to enable clients already using an ad-hoc server to discover a new infrastructure server via their existing ULD connection (avoiding the need to wake for multicast RA reception), and to support IPv4-only clients.
 
-### Client Behavior
+### Client Behavior {#client-behavior}
 
 A client that wishes to use ULD on a particular link must first discover the preferred ULD server. Discovery follows a series of steps:
 
 1. Attempt to discover an infrastructure server.
-2. Failing that, browse for a list of ad-hoc servers, and determine the preferred one using the priority specified in the TXT record (see {{advertisement}}). Since all ULD servers MUST support IPv6, an IPv6 client need only query the IPv6 mDNS multicast address (FF02::FB) for this.
+2. Failing that, browse for a list of ad-hoc servers, and determine the preferred one. Since all ULD servers MUST support IPv6, an IPv6 client need only query the IPv6 mDNS multicast address (FF02::FB) for this. Clients MAY also obtain the server list by querying any already-discovered ULD server.
 3. If no server is discovered, or if no discovered server appears to work, fall back to mDNS for .local service registration and discovery.
+
+Clients MUST determine server preference by comparing the following values in order, with the first difference deciding and lower values being preferred:
+
+{: type="a"}
+1. The server's priority: the numeric value of the `pri` TXT key ({{priority}})
+2. The server's rank: calculated based on the `seq` TXT key of all discovered servers ({{sequence}})
+3. The server's IPv6 link-local address, compared numerically. If the server's hostname has multiple AAAA records with link-local addresses, the numerically lowest of these MUST be used.
+
+Note that the first two values are always 0 for infrastructure servers; this means that ties between infrastructure servers can be broken with only the information available from the ULD RA option.
 
 Once a client has started to use a ULD server, it SHOULD cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client MUST also monitor the availability of the service. If the client detects that the service is no longer available, it MUST restart the discovery process.
 
 The client MUST consider its ULD server unavailable when operations directed at the server persistently fail (DNS queries time out, SRP lease refresh fails, or a DNS Push session is lost). When a client currently using an infrastructure server is awake and processing Router Advertisements, it MUST check for the continued presence of the ULD RA option. However, clients are not required to wake specifically for RA reception.
 
-As motivated in {{convergence}}, clients of an ad-hoc server MUST additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server that is preferable to the current server according to the rules defined in {{advertisement}}. Clients SHOULD utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it MUST re-register all its services with the new server.
+A server that has restarted may have lost the client's registrations, which the client can detect by a change in the server's sequence number (see {{sequence}}). A client that has registered services MUST therefore re-register them when it detects that its server has restarted. How a client detects this is implementation-specific: for example, a client with a DNS Push session can use keepalives and check the server's sequence number when it re-establishes a lost session, while a client using only UDP can periodically query the server's TXT record to verify that it still responds and that the sequence number is unchanged.
+
+As motivated in {{convergence}}, clients of an ad-hoc server MUST additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server. Clients SHOULD utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it MUST re-register all its services with the new server.
 
 ## IPv4 and Dual-Stack Operation {#dual-stack}
 
@@ -217,13 +252,13 @@ ULD is designed primarily for IPv6 operation: Infrastructure server discovery us
 
 A ULD server MUST therefore participate in mDNS on both the IPv6 multicast address (FF02::FB) and the IPv4 multicast address (224.0.0.251), unless deployed in an IPv6-only environment. The server SHOULD also accept ULD client connections over IPv4.
 
-Clients MAY connect to the ULD server over IPv4 using an on-link address. When a server receives ULD traffic over IPv4, it MUST verify that the source address falls within a directly-connected subnet of the receiving interface before processing a ".local." request. Even when connecting over IPv4, clients MUST use the server's IPv6 link-local address for the tiebreaker comparison defined in {{advertisement}}; this ensures all clients converge on the same server regardless of transport. If the preferred server is not reachable over IPv4, an IPv4-only client MUST fall back to mDNS. As the RA-based discovery mechanism is IPv6-only, an IPv4-only client discovers all servers, including the infrastructure server, via mDNS.
+Clients MAY connect to the ULD server over IPv4 using an on-link address. When a server receives ULD traffic over IPv4, it MUST verify that the source address falls within a directly-connected subnet of the receiving interface before processing a ".local." request. Even when connecting over IPv4, clients MUST use the server's IPv6 link-local address for the tiebreaker comparison defined in {{client-behavior}}; this ensures all clients converge on the same server regardless of transport. If the preferred server is not reachable over IPv4, an IPv4-only client MUST fall back to mDNS. As the RA-based discovery mechanism is IPv6-only, an IPv4-only client discovers all servers, including the infrastructure server, via mDNS.
 
 # Operational Considerations
 
 The ideal deployment state for ULD is a single infrastructure server on each link, providing streamlined discovery for all clients.
 
-A device that implements ULD MAY provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it MUST advertise as an ad-hoc server with a priority reflecting its capabilities.
+A device that implements ULD MAY provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it advertises as an ad-hoc server with a priority as described in {{advertisement}}. A device SHOULD only provide ad-hoc ULD service if it is expected to remain available on the link for extended periods (e.g. because it is mains-powered and does not normally sleep), and has sufficient resources to serve all clients on the link.
 
 In managed networks, the infrastructure ULD server designation MUST be enabled via explicit configuration by the network operator. Where multiple managed routers are present on a link, the operator MUST ensure that at most one advertises the ULD RA option.
 
