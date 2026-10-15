@@ -147,6 +147,8 @@ The Discovery Proxy's contributions to ULD queries generally follow the answer-a
 
 To support such clients, the ULD server MUST continue to issue mDNS queries for the requested records for at least 20 seconds after the most recent matching standard DNS query, as it would for records in which a local client has an active interest (Section 5.2 of {{!RFC6762}}). Where the requested records are unique (indicated by the cache-flush bit), whether received from the link or already held in the cache, the server need issue no further mDNS queries other than to refresh them as they approach expiry. Where the records may be shared, the server responds to each query immediately from its cache, while the continued querying surfaces any additional records on the link and keeps the cache current, so that the client's successive point-in-time snapshots converge on the complete set. This effectively matches the treatment that Section 5.6 of {{!RFC8766}} describes for subscriptions.
 
+ULD servers do not provide DNSSEC-signed responses, so the NSEC and NSEC3 synthesis described in Section 5.5.3 of {{!RFC8766}} does not apply, and a query for either type is answered with a NODATA response {{?RFC2308}}.
+
 ### Advertising Proxy
 
 A ULD server MUST publish the contents of its ".local." zone into mDNS using an Advertising Proxy, ensuring that services registered via SRP are discoverable via mDNS. As with the Discovery Proxy, the Advertising Proxy in ULD effectively operates without name rewriting: Because the records are already in the .local domain, the rewriting operation mandated by Section 2.1.2 of {{!I-D.ietf-dnssd-advertising-proxy}} is a no-op.
