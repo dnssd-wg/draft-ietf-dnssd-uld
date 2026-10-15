@@ -111,7 +111,7 @@ The following sections describe the architecture and operation of a ULD server o
 
 A device serving multiple links (e.g. a CE router with multiple VLAN interfaces) conceptually maintains a separate ULD instance per link, each with its own .local zone; the server's link-local address on each interface inherently scopes queries to the correct zone. Selection of the preferred server is also per link: a client operating on multiple links performs discovery separately for each, and may use ULD on some links while falling back to mDNS on others.
 
-## Transports
+## Transports {#transports}
 
 A ULD server MUST support DNS over UDP, DNS over TCP, and DNS over TLS {{!RFC7858}}. DNS over TLS support is required by the SRP specification {{!RFC9665}} and is also the basis for DNS Push Notifications. All services (DNS queries, SRP registration, and DNS Push) operate on the standard ports: port 53 for UDP and TCP, port 853 for TLS. A ULD server MUST support IPv6; dual-stack requirements are addressed in {{dual-stack}}.
 
@@ -186,7 +186,7 @@ All active ULD servers MUST advertise their presence using mDNS, as a DNS-SD ser
   - a `pri` key encoding the server's priority as a US-ASCII decimal number in the range 0-15 (see {{priority}})
   - a `seq` key encoding the server's sequence number as a US-ASCII decimal number in the range 0-4294967295 (see {{sequence}})
 - At least one AAAA record for the server's hostname with a link-local IPv6 address
-- At least one A record for the server's hostname with an on-link IPv4 address, if the server accepts ULD client connections over IPv4 (see {{dual-stack}})
+- At least one A record for the server's hostname with an on-link IPv4 address, if the server accepts ULD traffic over IPv4 (see {{dual-stack}})
 
 The server MAY advertise other address records for its hostname (e.g. AAAA records with routable addresses); these are not relevant for ULD clients.
 
@@ -255,11 +255,20 @@ As motivated in {{convergence}}, clients of an ad-hoc server MUST additionally k
 
 ## IPv4 and Dual-Stack Operation {#dual-stack}
 
-ULD is designed primarily for IPv6 operation: Infrastructure server discovery uses IPv6 Router Advertisements, and clients connect to the server's IPv6 link-local address, which provides inherent link-scoping. However, dual-stack mDNS interoperability is required to ensure that services on IPv4-only devices remain discoverable through the Discovery Proxy, and services on dual-stack ULD clients can be discovered over IPv4.
+ULD is designed primarily for IPv6 operation: Infrastructure server discovery uses IPv6 Router Advertisements, and clients connect to the server's IPv6 link-local address. However, dual-stack mDNS interoperability is required to ensure that services on IPv4-only devices remain discoverable through the Discovery Proxy, and services on dual-stack ULD clients can be discovered over IPv4.
 
-A ULD server MUST therefore participate in mDNS on both the IPv6 multicast address (FF02::FB) and the IPv4 multicast address (224.0.0.251), unless deployed in an IPv6-only environment. The server SHOULD also accept ULD client connections over IPv4.
+A ULD server MUST therefore participate in mDNS on both the IPv6 multicast address (FF02::FB) and the IPv4 multicast address (224.0.0.251), unless deployed in an IPv6-only environment.
 
-Clients MAY connect to the ULD server over IPv4 using an on-link address. When a server receives ULD traffic over IPv4, it MUST verify that the source address falls within a directly-connected subnet of the receiving interface before processing a ".local." request. Even when connecting over IPv4, clients MUST use the server's IPv6 link-local address for the tiebreaker comparison defined in {{client-behavior}}; this ensures all clients converge on the same server regardless of transport. If the preferred server is not reachable over IPv4, an IPv4-only client MUST fall back to mDNS. As the RA-based discovery mechanism is IPv6-only, an IPv4-only client discovers all servers, including the infrastructure server, via mDNS.
+A ULD server SHOULD also accept ULD traffic over IPv4, and clients MAY address ULD traffic to an on-link IPv4 address of the server. Even when doing so, clients MUST use the server's IPv6 link-local address for the tiebreaker comparison defined in {{client-behavior}}; this ensures all clients converge on the same server regardless of transport. If the preferred server is not reachable over IPv4, an IPv4-only client MUST fall back to mDNS. As the RA-based discovery mechanism is IPv6-only, an IPv4-only client discovers all servers, including the infrastructure server, via mDNS.
+
+On IPv6, ULD restricts access to .local to on-link devices by requiring link-local addresses (see {{transports}}). This does not carry over to IPv4, because IPv4 hosts do not usually have an IPv4 link-local address {{!RFC3927}} when a routable address is configured on the same interface. ULD therefore uses ordinary on-link IPv4 addresses and establishes link-locality explicitly. ULD messages sent over IPv4 UDP, by clients and servers alike, MUST be sent with an IP TTL of 255, following the Generalized TTL Security Mechanism {{?RFC5082}}. This is necessary because an on-link source address can be spoofed by an off-link attacker injecting UDP requests, such as SRP Updates, that require no response. Over TCP (including TLS), the three-way handshake already prevents such spoofing, so IPv4-only clients that cannot control the IP TTL can use TCP instead.
+
+A server that accepts ULD traffic over IPv4:
+
+- MUST silently discard requests for ".local." received over IPv4 UDP with an IP TTL less than 255.
+- MUST NOT accept TCP Fast Open {{?RFC7413}} payloads on IPv4 connections that do not use TLS, extending the corresponding requirement for SRP Updates (Section 6.1 of {{!RFC9665}}) to all requests.
+- MUST refuse other IPv4 requests for ".local." with RCODE 5 (REFUSED) unless the source address is an IPv4 link-local address {{!RFC3927}} or falls within a directly-connected subnet of the receiving interface.
+- MUST send traffic destined for IPv4 link-local addresses directly on the receiving interface (Section 2.6.2 of {{!RFC3927}}), even if it has no IPv4 link-local address of its own.
 
 # Operational Considerations
 
