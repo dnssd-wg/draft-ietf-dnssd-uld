@@ -123,7 +123,7 @@ ULD clients MAY use TLS, however clients that do support TLS SHOULD NOT fall bac
 
 ### Registering Services
 
-A ULD server MUST accept service registrations via the Service Registration Protocol (SRP) {{!RFC9665}}. Registrations MUST use ".local." as the registration domain, matching the names that would be used if the service were advertised via mDNS. The use of any other registration domain, including default.service.arpa, is out of scope for this specification.
+A ULD server MUST accept service registrations via the Service Registration Protocol (SRP) {{!RFC9665}}. Registrations MUST use ".local." as the registration domain, matching the names that would be used if the service were advertised via mDNS. The use of any other registration domain, including default.service.arpa, is out of scope for this specification. The server MUST reject any DNS Update message for ".local." that is not an SRP Update, responding with RCODE 5 (REFUSED).
 
 Because the .local zone is link-scoped, clients MUST only include address records (A, AAAA) in their SRP registrations that are valid on the link, following the same rules as for mDNS responses in Section 6.2 of {{!RFC6762}}.
 
