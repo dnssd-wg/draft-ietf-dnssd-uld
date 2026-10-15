@@ -5,8 +5,8 @@
 DNSSD                                                           T. Lemon
 Internet-Draft                                               K. Sperling
 Updates: 6762 (if approved)                                    Apple Inc
-Intended status: Standards Track                         13 October 2026
-Expires: 16 April 2027
+Intended status: Standards Track                         15 October 2026
+Expires: 18 April 2027
 
 
         Providing Local Unicast DNS-SD Service on Infrastructure
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 April 2027.
+   This Internet-Draft will expire on 18 April 2027.
 
 Copyright Notice
 
@@ -425,9 +425,13 @@ Table of Contents
    *  An SRV record for the service instance, pointing to the server's
       hostname and port 53
 
-   *  A TXT record for the service instance, containing a pri key
-      encoding the server's priority as a US-ASCII decimal number in the
-      range 0-65535
+   *  A TXT record for the service instance, containing
+
+      -  a pri key encoding the server's priority as a US-ASCII decimal
+         number in the range 0-65535 (see Section 3.3.1.1)
+
+      -  a seq key encoding the server's sequence number as a US-ASCII
+         decimal number in the range 0-4294967295 (see Section 3.3.1.2)
 
    *  At least one AAAA record for the server's hostname with a link-
       local IPv6 address
@@ -442,9 +446,14 @@ Table of Contents
 
    Because a ULD service instance is described by a single SRV record,
    its priority and weight fields SHOULD be set to zero per Section 5 of
-   [RFC6763].  Selection among ULD servers is based on the numeric value
-   of the pri TXT key; lower priority values are preferred.  Servers
-   advertise a priority based on their deployment mode and capabilities:
+   [RFC6763], and MUST be ignored when processing an advertisement.
+   Advertisements lacking a priority, sequence number, or an IPv6 link-
+   local address are invalid and MUST be ignored.
+
+3.3.1.1.  Server Priority
+
+   Servers advertise a priority based on their deployment mode and
+   capabilities:
 
    *  0: Infrastructure server
 
@@ -469,6 +478,51 @@ Table of Contents
    Because a change in priority triggers discovery work for clients and
    may cause them to migrate between servers, servers SHOULD base their
    priority on stable properties.
+
+3.3.1.2.  Sequence Numbers
+
+   Each server advertises a sequence number that allows clients to order
+   servers by age, so that a server that has been available for longer
+   is preferred over one that has just appeared, and to detect when a
+   server has restarted.  Sequence numbers are unsigned 32-bit integers
+   forming a ring modulo 2^32.  The _distance_ from sequence number A to
+   B is calculated as (B - A) mod 2^32.
+
+   Given the set of distinct sequence numbers of all servers discovered
+   on a link, the _oldest_ and _newest_ sequence numbers are determined
+   as follows: If the set contains only one value, it is trivially both
+   oldest and newest.  Otherwise, the values are sorted in ascending
+   order and the gap (i.e. the distance) from each value to the next is
+   calculated, with the gap from the last value wrapping around to the
+   first.  The value at the start of the largest gap is the _newest_
+   sequence number, and the value at the end of it is the _oldest_. If
+   multiple gaps are equally large, the one starting at the numerically
+   lowest value is used.
+
+   The _rank_ of an ad-hoc server is then calculated as the distance
+   from the oldest sequence number to the server's sequence number: a
+   lower rank indicates an older server.  Infrastructure servers are not
+   ordered by age and always have rank 0, regardless of their sequence
+   number.
+
+   A server MUST choose its sequence number when it starts up or
+   otherwise loses its registration state, after browsing for other ULD
+   servers on the link, and MUST NOT change it otherwise.  If no other
+   servers are found, the server chooses a value uniformly at random.
+   Otherwise, it chooses (newest + 1 + R) mod 2^32, where R is a random
+   value in the range 0-65535, making it the newest server.  The random
+   component makes it unlikely that a restarted server ends up with its
+   previous sequence number.
+
+   Servers that choose sequence numbers independently (e.g. after a
+   power outage, or when previously separate links are joined) can end
+   up spread around the ring without a single dominant gap.  In a state
+   where several gaps have almost equal sizes, departure or addition of
+   servers can cause the largest gap and therefore the oldest server
+   designation to jump.  To reduce the likelihood of this happening, if
+   the second-largest gap is larger than half the largest gap, a server
+   SHOULD instead choose (start + floor(gap / 2) + R) mod 2^32, where
+   start and gap describe the second-largest gap.
 
 3.3.2.  Infrastructure RA Option
 
@@ -510,17 +564,23 @@ Table of Contents
        work, fall back to mDNS for .local service registration and
        discovery.
 
-   Clients MUST determine server preference using the server's priority
-   (the numeric value of the pri TXT key, or 0 for infrastructure
-   servers), with lower values being preferred.  The priority and weight
-   fields of the SRV record MUST be ignored; mDNS APIs typically do not
-   expose these fields in any case.  If there are multiple servers with
-   the same priority, ties MUST be broken by preferring the one with the
-   numerically lowest IPv6 link-local address.  If an individual
-   server's hostname has multiple AAAA records with link-local
-   addresses, the numerically lowest of these addresses MUST be used for
-   comparison purposes.  Server advertisements lacking a priority or an
-   IPv6 link-local address MUST be ignored.
+   Clients MUST determine server preference by comparing the following
+   values in order, with the first difference deciding and lower values
+   being preferred:
+
+   a.  The server's priority: the numeric value of the pri TXT key
+       (Section 3.3.1.1)
+
+   b.  The server's rank: calculated based on the seq TXT key of all
+       discovered servers (Section 3.3.1.2)
+
+   c.  The server's IPv6 link-local address, compared numerically.  If
+       the server's hostname has multiple AAAA records with link-local
+       addresses, the numerically lowest of these MUST be used.
+
+   Note that the first two values are always 0 for infrastructure
+   servers; this means that ties between infrastructure servers can be
+   broken with only the information available from the ULD RA option.
 
    Once a client has started to use a ULD server, it SHOULD cease its
    own mDNS participation on that link, and rely on the ULD server for
@@ -536,15 +596,25 @@ Table of Contents
    the ULD RA option.  However, clients are not required to wake
    specifically for RA reception.
 
+   A server that has restarted may have lost the client's registrations,
+   which the client can detect by a change in the server's sequence
+   number (see Section 3.3.1.2).  A client that has registered services
+   MUST therefore re-register them when it detects that its server has
+   restarted.  How a client detects this is implementation-specific: for
+   example, a client with a DNS Push session can use keepalives and
+   check the server's sequence number when it re-establishes a lost
+   session, while a client using only UDP can periodically query the
+   server's TXT record to verify that it still responds and that the
+   sequence number is unchanged.
+
    As motivated in Appendix C, clients of an ad-hoc server MUST
    additionally keep looking for the appearance of a more-preferred
    server; this could be an infrastructure server or another ad-hoc
-   server that is preferable to the current server according to the
-   rules defined above.  Clients SHOULD utilize a DNS Push subscription
-   with the current server for this purpose.  When a client migrates to
-   a new server (whether due to server failure or the appearance of a
-   more-preferred server), it MUST re-register all its services with the
-   new server.
+   server that is more preferred than the current server.  Clients
+   SHOULD utilize a DNS Push subscription with the current server for
+   this purpose.  When a client migrates to a new server (whether due to
+   server failure or the appearance of a more-preferred server), it MUST
+   re-register all its services with the new server.
 
 3.4.  IPv4 and Dual-Stack Operation
 

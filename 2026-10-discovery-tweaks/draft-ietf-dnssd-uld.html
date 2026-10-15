@@ -1230,7 +1230,7 @@ li > p:last-of-type:only-child {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Lemon &amp; Sperling</td>
-<td class="center">Expires 16 April 2027</td>
+<td class="center">Expires 18 April 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1246,12 +1246,12 @@ li > p:last-of-type:only-child {
 <a href="https://www.rfc-editor.org/rfc/rfc6762" class="eref">6762</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-10-13" class="published">13 October 2026</time>
+<time datetime="2026-10-15" class="published">15 October 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-04-16">16 April 2027</time></dd>
+<dd class="expires"><time datetime="2027-04-18">18 April 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1304,7 +1304,7 @@ li > p:last-of-type:only-child {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 16 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1674,7 +1674,15 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
               <p id="section-3.3.1-2.2.1">An SRV record for the service instance, pointing to the server's hostname and port 53<a href="#section-3.3.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.3.1-2.3">
-              <p id="section-3.3.1-2.3.1">A TXT record for the service instance, containing a <code>pri</code> key encoding the server's priority as a US-ASCII decimal number in the range 0-65535<a href="#section-3.3.1-2.3.1" class="pilcrow">¶</a></p>
+              <p id="section-3.3.1-2.3.1">A TXT record for the service instance, containing<a href="#section-3.3.1-2.3.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.3.1-2.3.2.1">
+                  <p id="section-3.3.1-2.3.2.1.1">a <code>pri</code> key encoding the server's priority as a US-ASCII decimal number in the range 0-65535 (see <a href="#priority" class="auto internal xref">Section 3.3.1.1</a>)<a href="#section-3.3.1-2.3.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-3.3.1-2.3.2.2">
+                  <p id="section-3.3.1-2.3.2.2.1">a <code>seq</code> key encoding the server's sequence number as a US-ASCII decimal number in the range 0-4294967295 (see <a href="#sequence" class="auto internal xref">Section 3.3.1.2</a>)<a href="#section-3.3.1-2.3.2.2.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
 </li>
             <li class="normal" id="section-3.3.1-2.4">
               <p id="section-3.3.1-2.4.1">At least one AAAA record for the server's hostname with a link-local IPv6 address<a href="#section-3.3.1-2.4.1" class="pilcrow">¶</a></p>
@@ -1684,23 +1692,44 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 </li>
           </ul>
 <p id="section-3.3.1-3">The server <span class="bcp14">MAY</span> advertise other address records for its hostname (e.g. AAAA records with routable addresses); these are not relevant for ULD clients.<a href="#section-3.3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.3.1-4">Because a ULD service instance is described by a single SRV record, its priority and weight fields <span class="bcp14">SHOULD</span> be set to zero per Section 5 of <span>[<a href="#RFC6763" class="cite xref">RFC6763</a>]</span>. Selection among ULD servers is based on the numeric value of the <code>pri</code> TXT key; lower priority values are preferred. Servers advertise a priority based on their deployment mode and capabilities:<a href="#section-3.3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.3.1-4">Because a ULD service instance is described by a single SRV record, its priority and weight fields <span class="bcp14">SHOULD</span> be set to zero per Section 5 of <span>[<a href="#RFC6763" class="cite xref">RFC6763</a>]</span>, and <span class="bcp14">MUST</span> be ignored when processing an advertisement.
+Advertisements lacking a priority, sequence number, or an IPv6 link-local address are invalid and <span class="bcp14">MUST</span> be ignored.<a href="#section-3.3.1-4" class="pilcrow">¶</a></p>
+<div id="priority">
+<section id="section-3.3.1.1">
+            <h5 id="name-server-priority">
+<a href="#section-3.3.1.1" class="section-number selfRef">3.3.1.1. </a><a href="#name-server-priority" class="section-name selfRef">Server Priority</a>
+            </h5>
+<p id="section-3.3.1.1-1">Servers advertise a priority based on their deployment mode and capabilities:<a href="#section-3.3.1.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.3.1-5.1">
-              <p id="section-3.3.1-5.1.1">0: Infrastructure server<a href="#section-3.3.1-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.3.1.1-2.1">
+                <p id="section-3.3.1.1-2.1.1">0: Infrastructure server<a href="#section-3.3.1.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-3.3.1-5.2">
-              <p id="section-3.3.1-5.2.1">2000-2099: Unconstrained ad-hoc server on a wired network link<a href="#section-3.3.1-5.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.3.1.1-2.2">
+                <p id="section-3.3.1.1-2.2.1">2000-2099: Unconstrained ad-hoc server on a wired network link<a href="#section-3.3.1.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-3.3.1-5.3">
-              <p id="section-3.3.1-5.3.1">4000-4099: Unconstrained ad-hoc server on a Wi-Fi link<a href="#section-3.3.1-5.3.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.3.1.1-2.3">
+                <p id="section-3.3.1.1-2.3.1">4000-4099: Unconstrained ad-hoc server on a Wi-Fi link<a href="#section-3.3.1.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-3.3.1-5.4">
-              <p id="section-3.3.1-5.4.1">6000-6099: Ad-hoc server with limited resources (e.g. CPU, memory, or network interface quality)<a href="#section-3.3.1-5.4.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.3.1.1-2.4">
+                <p id="section-3.3.1.1-2.4.1">6000-6099: Ad-hoc server with limited resources (e.g. CPU, memory, or network interface quality)<a href="#section-3.3.1.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
-          </ul>
-<p id="section-3.3.1-6">An ad-hoc server's priority <span class="bcp14">SHOULD</span> be chosen from the range reflecting its capabilities. Priority values outside of these ranges are reserved for future use; clients compare all priority values numerically regardless (see <a href="#client-behavior" class="auto internal xref">Section 3.3.3</a>).<a href="#section-3.3.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.3.1-7">The ranges define a coarse preference ordering between server categories; the choice of priority value within the range is implementation-specific, and is intended for ordering an implementation's own devices relative to each other (e.g. based on specific hardware capabilities). Implementations that have no basis for such a choice <span class="bcp14">SHOULD</span> use an offset of 50 within the range. Because a change in priority triggers discovery work for clients and may cause them to migrate between servers, servers <span class="bcp14">SHOULD</span> base their priority on stable properties.<a href="#section-3.3.1-7" class="pilcrow">¶</a></p>
+            </ul>
+<p id="section-3.3.1.1-3">An ad-hoc server's priority <span class="bcp14">SHOULD</span> be chosen from the range reflecting its capabilities. Priority values outside of these ranges are reserved for future use; clients compare all priority values numerically regardless (see <a href="#client-behavior" class="auto internal xref">Section 3.3.3</a>).<a href="#section-3.3.1.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.1-4">The ranges define a coarse preference ordering between server categories; the choice of priority value within the range is implementation-specific, and is intended for ordering an implementation's own devices relative to each other (e.g. based on specific hardware capabilities). Implementations that have no basis for such a choice <span class="bcp14">SHOULD</span> use an offset of 50 within the range. Because a change in priority triggers discovery work for clients and may cause them to migrate between servers, servers <span class="bcp14">SHOULD</span> base their priority on stable properties.<a href="#section-3.3.1.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sequence">
+<section id="section-3.3.1.2">
+            <h5 id="name-sequence-numbers">
+<a href="#section-3.3.1.2" class="section-number selfRef">3.3.1.2. </a><a href="#name-sequence-numbers" class="section-name selfRef">Sequence Numbers</a>
+            </h5>
+<p id="section-3.3.1.2-1">Each server advertises a sequence number that allows clients to order servers by age, so that a server that has been available for longer is preferred over one that has just appeared, and to detect when a server has restarted. Sequence numbers are unsigned 32-bit integers forming a ring modulo 2^32. The <em>distance</em> from sequence number A to B is calculated as <code>(B - A) mod 2^32</code>.<a href="#section-3.3.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.2-2">Given the set of distinct sequence numbers of all servers discovered on a link, the <em>oldest</em> and <em>newest</em> sequence numbers are determined as follows: If the set contains only one value, it is trivially both oldest and newest. Otherwise, the values are sorted in ascending order and the gap (i.e. the distance) from each value to the next is calculated, with the gap from the last value wrapping around to the first. The value at the start of the largest gap is the <em>newest</em> sequence number, and the value at the end of it is the <em>oldest</em>. If multiple gaps are equally large, the one starting at the numerically lowest value is used.<a href="#section-3.3.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.2-3">The <em>rank</em> of an ad-hoc server is then calculated as the distance from the oldest sequence number to the server's sequence number: a lower rank indicates an older server. Infrastructure servers are not ordered by age and always have rank 0, regardless of their sequence number.<a href="#section-3.3.1.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.2-4">A server <span class="bcp14">MUST</span> choose its sequence number when it starts up or otherwise loses its registration state, after browsing for other ULD servers on the link, and <span class="bcp14">MUST NOT</span> change it otherwise. If no other servers are found, the server chooses a value uniformly at random. Otherwise, it chooses <code>(newest + 1 + R) mod 2^32</code>, where R is a random value in the range 0-65535, making it the newest server. The random component makes it unlikely that a restarted server ends up with its previous sequence number.<a href="#section-3.3.1.2-4" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.2-5">Servers that choose sequence numbers independently (e.g. after a power outage, or when previously separate links are joined) can end up spread around the ring without a single dominant gap. In a state where several gaps have almost equal sizes, departure or addition of servers can cause the largest gap and therefore the oldest server designation to jump. To reduce the likelihood of this happening, if the second-largest gap is larger than half the largest gap, a server <span class="bcp14">SHOULD</span> instead choose <code>(start + floor(gap / 2) + R) mod 2^32</code>, where start and gap describe the second-largest gap.<a href="#section-3.3.1.2-5" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="infrastructure-ra-option">
@@ -1729,10 +1758,23 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
               <p id="section-3.3.3-2.3.1">If no server is discovered, or if no discovered server appears to work, fall back to mDNS for .local service registration and discovery.<a href="#section-3.3.3-2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
-<p id="section-3.3.3-3">Clients <span class="bcp14">MUST</span> determine server preference using the server's priority (the numeric value of the <code>pri</code> TXT key, or 0 for infrastructure servers), with lower values being preferred. The priority and weight fields of the SRV record <span class="bcp14">MUST</span> be ignored; mDNS APIs typically do not expose these fields in any case. If there are multiple servers with the same priority, ties <span class="bcp14">MUST</span> be broken by preferring the one with the numerically lowest IPv6 link-local address. If an individual server's hostname has multiple AAAA records with link-local addresses, the numerically lowest of these addresses <span class="bcp14">MUST</span> be used for comparison purposes. Server advertisements lacking a priority or an IPv6 link-local address <span class="bcp14">MUST</span> be ignored.<a href="#section-3.3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-4">Once a client has started to use a ULD server, it <span class="bcp14">SHOULD</span> cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client <span class="bcp14">MUST</span> also monitor the availability of the service. If the client detects that the service is no longer available, it <span class="bcp14">MUST</span> restart the discovery process.<a href="#section-3.3.3-4" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-5">The client <span class="bcp14">MUST</span> consider its ULD server unavailable when operations directed at the server persistently fail (DNS queries time out, SRP lease refresh fails, or a DNS Push session is lost). When a client currently using an infrastructure server is awake and processing Router Advertisements, it <span class="bcp14">MUST</span> check for the continued presence of the ULD RA option. However, clients are not required to wake specifically for RA reception.<a href="#section-3.3.3-5" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-6">As motivated in <a href="#convergence" class="auto internal xref">Appendix C</a>, clients of an ad-hoc server <span class="bcp14">MUST</span> additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server that is preferable to the current server according to the rules defined above. Clients <span class="bcp14">SHOULD</span> utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it <span class="bcp14">MUST</span> re-register all its services with the new server.<a href="#section-3.3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-3">Clients <span class="bcp14">MUST</span> determine server preference by comparing the following values in order, with the first difference deciding and lower values being preferred:<a href="#section-3.3.3-3" class="pilcrow">¶</a></p>
+<ol start="1" type="a" class="normal type-a" id="section-3.3.3-4">
+<li id="section-3.3.3-4.1">
+              <p id="section-3.3.3-4.1.1">The server's priority: the numeric value of the <code>pri</code> TXT key (<a href="#priority" class="auto internal xref">Section 3.3.1.1</a>)<a href="#section-3.3.3-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-3.3.3-4.2">
+              <p id="section-3.3.3-4.2.1">The server's rank: calculated based on the <code>seq</code> TXT key of all discovered servers (<a href="#sequence" class="auto internal xref">Section 3.3.1.2</a>)<a href="#section-3.3.3-4.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-3.3.3-4.3">
+              <p id="section-3.3.3-4.3.1">The server's IPv6 link-local address, compared numerically. If the server's hostname has multiple AAAA records with link-local addresses, the numerically lowest of these <span class="bcp14">MUST</span> be used.<a href="#section-3.3.3-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ol>
+<p id="section-3.3.3-5">Note that the first two values are always 0 for infrastructure servers; this means that ties between infrastructure servers can be broken with only the information available from the ULD RA option.<a href="#section-3.3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-6">Once a client has started to use a ULD server, it <span class="bcp14">SHOULD</span> cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client <span class="bcp14">MUST</span> also monitor the availability of the service. If the client detects that the service is no longer available, it <span class="bcp14">MUST</span> restart the discovery process.<a href="#section-3.3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-7">The client <span class="bcp14">MUST</span> consider its ULD server unavailable when operations directed at the server persistently fail (DNS queries time out, SRP lease refresh fails, or a DNS Push session is lost). When a client currently using an infrastructure server is awake and processing Router Advertisements, it <span class="bcp14">MUST</span> check for the continued presence of the ULD RA option. However, clients are not required to wake specifically for RA reception.<a href="#section-3.3.3-7" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-8">A server that has restarted may have lost the client's registrations, which the client can detect by a change in the server's sequence number (see <a href="#sequence" class="auto internal xref">Section 3.3.1.2</a>). A client that has registered services <span class="bcp14">MUST</span> therefore re-register them when it detects that its server has restarted. How a client detects this is implementation-specific: for example, a client with a DNS Push session can use keepalives and check the server's sequence number when it re-establishes a lost session, while a client using only UDP can periodically query the server's TXT record to verify that it still responds and that the sequence number is unchanged.<a href="#section-3.3.3-8" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-9">As motivated in <a href="#convergence" class="auto internal xref">Appendix C</a>, clients of an ad-hoc server <span class="bcp14">MUST</span> additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server that is more preferred than the current server. Clients <span class="bcp14">SHOULD</span> utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it <span class="bcp14">MUST</span> re-register all its services with the new server.<a href="#section-3.3.3-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
