@@ -609,10 +609,10 @@ Table of Contents
 
    As motivated in Appendix C, clients of an ad-hoc server MUST
    additionally keep looking for the appearance of a more-preferred
-   server; this could be an infrastructure server or another ad-hoc
-   server that is more preferred than the current server.  Clients
-   SHOULD utilize a DNS Push subscription with the current server for
-   this purpose.  When a client migrates to a new server (whether due to
+   server, as determined by the comparison above.  This could be an
+   infrastructure server or another ad-hoc server.  Clients SHOULD
+   utilize a DNS Push subscription with the current server for this
+   purpose.  When a client migrates to a new server (whether due to
    server failure or the appearance of a more-preferred server), it MUST
    re-register all its services with the new server.
 
