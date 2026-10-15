@@ -244,7 +244,7 @@ The client MUST consider its ULD server unavailable when operations directed at 
 
 A server that has restarted may have lost the client's registrations, which the client can detect by a change in the server's sequence number (see {{sequence}}). A client that has registered services MUST therefore re-register them when it detects that its server has restarted. How a client detects this is implementation-specific: for example, a client with a DNS Push session can use keepalives and check the server's sequence number when it re-establishes a lost session, while a client using only UDP can periodically query the server's TXT record to verify that it still responds and that the sequence number is unchanged.
 
-As motivated in {{convergence}}, clients of an ad-hoc server MUST additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server that is more preferred than the current server. Clients SHOULD utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it MUST re-register all its services with the new server.
+As motivated in {{convergence}}, clients of an ad-hoc server MUST additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server. Clients SHOULD utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it MUST re-register all its services with the new server.
 
 ## IPv4 and Dual-Stack Operation {#dual-stack}
 
