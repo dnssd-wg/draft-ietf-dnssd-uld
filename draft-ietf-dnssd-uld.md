@@ -180,7 +180,8 @@ All active ULD servers MUST advertise their presence using mDNS, as a DNS-SD ser
 - A PTR record at `<uld-service-name>._tcp.local.` pointing to the service instance name
 - An SRV record for the service instance, pointing to the server's hostname and port 53
 - A TXT record for the service instance, containing
-  - a `pri` key encoding the server's priority as a US-ASCII decimal number in the range 0-65535 (see {{priority}})
+  - a `v` key encoding the version of this specification implemented by the server as a US-ASCII decimal number in the range 1-255 (see {{version}})
+  - a `pri` key encoding the server's priority as a US-ASCII decimal number in the range 0-15 (see {{priority}})
   - a `seq` key encoding the server's sequence number as a US-ASCII decimal number in the range 0-4294967295 (see {{sequence}})
 - At least one AAAA record for the server's hostname with a link-local IPv6 address
 - At least one A record for the server's hostname with an on-link IPv4 address, if the server accepts ULD client connections over IPv4 (see {{dual-stack}})
@@ -188,20 +189,21 @@ All active ULD servers MUST advertise their presence using mDNS, as a DNS-SD ser
 The server MAY advertise other address records for its hostname (e.g. AAAA records with routable addresses); these are not relevant for ULD clients.
 
 Because a ULD service instance is described by a single SRV record, its priority and weight fields SHOULD be set to zero per Section 5 of {{!RFC6763}}, and MUST be ignored when processing an advertisement.
-Advertisements lacking a priority, sequence number, or an IPv6 link-local address are invalid and MUST be ignored.
+Advertisements lacking a version, priority, sequence number, or an IPv6 link-local address, or with a version or priority outside the specified range, are invalid and MUST be ignored.
+
+#### Version {#version}
+
+The `v` key identifies the version of this specification implemented by the server. Servers implementing this document MUST advertise `v=1`. Future versions of this specification may define higher values, along with different priority benchmarks for servers advertising them. Clients compare versions numerically as described in {{client-behavior}}, regardless of whether they implement that version, so that all clients converge on the same server.
 
 #### Server Priority {#priority}
 
-Servers advertise a priority based on their deployment mode and capabilities:
+Servers advertise a priority based on their deployment mode and capabilities. Priority 0 identifies an infrastructure server. Ad-hoc servers advertise a priority between 1 and 15, chosen relative to the following benchmarks:
 
-- 0: Infrastructure server
-- 2000-2099: Unconstrained ad-hoc server on a wired network link
-- 4000-4099: Unconstrained ad-hoc server on a Wi-Fi link
-- 6000-6099: Ad-hoc server with limited resources (e.g. CPU, memory, or network interface quality)
+- 4: Unconstrained ad-hoc server on a wired network link
+- 8: Unconstrained ad-hoc server on a Wi-Fi link
+- 12: Ad-hoc server with limited resources (e.g. CPU, memory, or network interface quality)
 
-An ad-hoc server's priority SHOULD be chosen from the range reflecting its capabilities. Priority values outside of these ranges are reserved for future use; clients compare all priority values numerically regardless (see {{client-behavior}}).
-
-The ranges define a coarse preference ordering between server categories; the choice of priority value within the range is implementation-specific, and is intended for ordering an implementation's own devices relative to each other (e.g. based on specific hardware capabilities). Implementations that have no basis for such a choice SHOULD use an offset of 50 within the range. Because a change in priority triggers discovery work for clients and may cause them to migrate between servers, servers SHOULD base their priority on stable properties.
+Because priority is compared before rank (see {{client-behavior}}), any difference in priority overrides the preference for the longest-running server, and causes clients to migrate when a higher-priority server appears. An ad-hoc server SHOULD therefore advertise the benchmark value for its category, and only deviate from it to reflect a difference in capability that justifies such a migration, e.g. between classes of an implementation's own devices. Because a change in priority triggers discovery work for clients and may cause them to migrate between servers, servers SHOULD base their priority on stable properties.
 
 #### Sequence Numbers {#sequence}
 
@@ -211,7 +213,7 @@ Given the set of distinct sequence numbers of all servers discovered on a link, 
 
 The *rank* of an ad-hoc server is then calculated as the distance from the oldest sequence number to the server's sequence number: a lower rank indicates an older server. Infrastructure servers are not ordered by age and always have rank 0, regardless of their sequence number.
 
-A server MUST choose its sequence number when it starts up or otherwise loses its registration state, after browsing for other ULD servers on the link, and MUST NOT change it otherwise. If no other servers are found, the server chooses a value uniformly at random. Otherwise, it chooses `(newest + 1 + R) mod 2^32`, where R is a random value in the range 0-65535, making it the newest server. The random component makes it unlikely that a restarted server ends up with its previous sequence number.
+A server MUST choose its sequence number when it starts up or otherwise loses its registration state, after browsing for other ULD servers on the link, and MUST NOT change it otherwise. If no other servers are found, the server chooses a value uniformly at random from the range 0 to 3 * 2^30, i.e. from three quarters of the ring. Otherwise, it chooses `(newest + 1 + R) mod 2^32`, where R is a random value in the range 0-65535, making it the newest server. The random component makes it unlikely that a restarted server ends up with its previous sequence number.
 
 Servers that choose sequence numbers independently (e.g. after a power outage, or when previously separate links are joined) can end up spread around the ring without a single dominant gap. In a state where several gaps have almost equal sizes, departure or addition of servers can cause the largest gap and therefore the oldest server designation to jump. To reduce the likelihood of this happening, if the second-largest gap is larger than half the largest gap, a server SHOULD instead choose `(start + floor(gap / 2) + R) mod 2^32`, where start and gap describe the second-largest gap.
 
@@ -229,14 +231,16 @@ A client that wishes to use ULD on a particular link must first discover the pre
 2. Failing that, browse for a list of ad-hoc servers, and determine the preferred one. Since all ULD servers MUST support IPv6, an IPv6 client need only query the IPv6 mDNS multicast address (FF02::FB) for this. Clients MAY also obtain the server list by querying any already-discovered ULD server.
 3. If no server is discovered, or if no discovered server appears to work, fall back to mDNS for .local service registration and discovery.
 
-Clients MUST determine server preference by comparing the following values in order, with the first difference deciding and lower values being preferred:
+Clients MUST determine server preference by comparing the following in order, with the first difference deciding:
 
 {: type="a"}
-1. The server's priority: the numeric value of the `pri` TXT key ({{priority}})
-2. The server's rank: calculated based on the `seq` TXT key of all discovered servers ({{sequence}})
-3. The server's IPv6 link-local address, compared numerically. If the server's hostname has multiple AAAA records with link-local addresses, the numerically lowest of these MUST be used.
+1. Whether the server is an infrastructure server (priority 0): infrastructure servers are preferred over ad-hoc servers.
+2. For ad-hoc servers, the server's version, i.e. the numeric value of the `v` TXT key ({{version}}). Higher values are preferred.
+3. The server's priority: the numeric value of the `pri` TXT key ({{priority}}). Lower values are preferred.
+4. The server's rank, calculated from the `seq` TXT key of all discovered servers ({{sequence}}). Lower values are preferred.
+5. The server's IPv6 link-local address, compared numerically. Lower values are preferred. If the server's hostname has multiple AAAA records with link-local addresses, the numerically lowest of these MUST be used.
 
-Note that the first two values are always 0 for infrastructure servers; this means that ties between infrastructure servers can be broken with only the information available from the ULD RA option.
+Note that infrastructure servers are not compared by version, and always have rank 0. Ties between infrastructure servers are therefore broken by address alone, using only the information available from the ULD RA option. Since a link is expected to have at most one infrastructure server, this tiebreaker is only a last resort.
 
 Once a client has started to use a ULD server, it SHOULD cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client MUST also monitor the availability of the service. If the client detects that the service is no longer available, it MUST restart the discovery process.
 
