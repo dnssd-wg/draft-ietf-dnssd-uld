@@ -147,6 +147,8 @@ The Discovery Proxy's contributions to ULD queries generally follow the answer-a
 
 To support such clients, the ULD server MUST continue to issue mDNS queries for the requested records for at least 20 seconds after the most recent matching standard DNS query, as it would for records in which a local client has an active interest (Section 5.2 of {{!RFC6762}}). Where the requested records are unique (indicated by the cache-flush bit), whether received from the link or already held in the cache, the server need issue no further mDNS queries other than to refresh them as they approach expiry. Where the records may be shared, the server responds to each query immediately from its cache, while the continued querying surfaces any additional records on the link and keeps the cache current, so that the client's successive point-in-time snapshots converge on the complete set. This effectively matches the treatment that Section 5.6 of {{!RFC8766}} describes for subscriptions.
 
+In addition, the server MUST maintain an active interest in the `_uld._tcp` service instances on the link, as it would for a local client browsing for them (Section 4 of {{!RFC6763}}), including their SRV, TXT, and address records. Together with the server's own advertisement ({{admin-records}}), this ensures that a single query to any ULD server returns the complete server list, along with the records clients need to rank the servers.
+
 ULD servers do not provide DNSSEC-signed responses, so the NSEC and NSEC3 synthesis described in Section 5.5.3 of {{!RFC8766}} does not apply, and a query for either type is answered with a NODATA response {{?RFC2308}}.
 
 ### Advertising Proxy
@@ -155,23 +157,21 @@ A ULD server MUST publish the contents of its ".local." zone into mDNS using an 
 
 A ULD server MUST implement TSR {{!I-D.ietf-dnssd-tsr}} to correctly resolve conflicts that arise when the same records reach mDNS via different paths, for example when a client transitions from direct mDNS participation to using ULD.
 
-### Administrative Records
+### Administrative Records {#admin-records}
 
-The ".local." zone MUST contain a number of administrative records. These records have no meaning in the mDNS namespace and MUST NOT be published by the Advertising Proxy.
+In addition to the records registered by clients via SRP, the ".local." zone MUST contain a number of administrative records, described below. None of these records are published by the Advertising Proxy.
 
-As described in Section 6 of {{!RFC8766}}, the zone MUST contain:
+The zone MUST contain a copy of the server's own `_uld._tcp` service advertisement, consisting of the records listed in {{advertisement}}. This makes them available to ULD clients, including as part of the server list.
 
-- A SOA record for the zone
-- Exactly one NS record for the zone, referencing the ULD server's own hostname in .local
-- AAAA record(s) for that hostname, and A record(s) if applicable
+The zone MUST also contain the following records describing the zone and the services offered by the server. They exist only in the zone and are not advertised on mDNS.
 
-For compatibility with client libraries that perform standard DNS Push or SRP service endpoint discovery, the zone MUST also contain the following SRV records, each pointing to the server's hostname in .local and the relevant well-known port:
+- A SOA record for the zone, and exactly one NS record referencing the ULD server's own hostname, as described in Section 6 of {{!RFC8766}}.
+- For compatibility with client libraries that perform standard DNS Push or SRP service endpoint discovery, the following SRV records, each pointing to the server's hostname and the relevant well-known port:
+  - `_dns-push-tls._tcp.local.` - port 853 (DNS Push Notifications)
+  - `_dnssd-srp-tls._tcp.local.` - port 853 (SRP registration over TLS)
+  - `_dnssd-srp._tcp.local.` - port 53 (SRP registration over UDP/TCP)
 
-- `_dns-push-tls._tcp.local.` — port 853 (DNS Push Notifications)
-- `_dnssd-srp-tls._tcp.local.` — port 853 (SRP registration over TLS)
-- `_dnssd-srp._tcp.local.` — port 53 (SRP registration over UDP/TCP)
-
-The ULD server MUST ensure its own hostname is unique on the link. This can be achieved either by using a randomly generated name that is statistically guaranteed to be unique, or by claiming the name via mDNS probing as defined in Section 8 of {{!RFC6762}}. In either case, the server's hostname is owned and defended directly by the server as an mDNS participant, not published on behalf of a client via the Advertising Proxy.
+Apart from the PTR record at `_uld._tcp.local.`, which is shared with the advertisements of other servers, all administrative record sets are unique, so the Discovery Proxy SHOULD NOT be consulted for queries matching them.
 
 ## Server Discovery and Monitoring
 
@@ -191,6 +191,8 @@ All active ULD servers MUST advertise their presence using mDNS, as a DNS-SD ser
 The server MAY advertise other address records for its hostname (e.g. AAAA records with routable addresses); these are not relevant for ULD clients.
 
 Because a ULD service instance is described by a single SRV record, its priority and weight fields SHOULD be set to zero per Section 5 of {{!RFC6763}}, and MUST be ignored when processing an advertisement. Advertisements lacking a version, priority, sequence number, or an IPv6 link-local address, or with a version, priority, or sequence number outside the specified range, are invalid and MUST be ignored.
+
+The server claims its hostname and service instance name as an ordinary mDNS responder, not through its Advertising Proxy, probing for them and renaming itself in the event of a conflict as specified in Sections 8 and 9 of {{!RFC6762}}.
 
 #### Version {#version}
 
