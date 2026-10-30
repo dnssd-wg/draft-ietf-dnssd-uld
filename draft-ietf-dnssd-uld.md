@@ -37,6 +37,18 @@ author:
 
 normative:
 informative:
+  IANA-SRV:
+    title: Service Name and Transport Protocol Port Number Registry
+    target: https://www.iana.org/assignments/service-names-port-numbers
+    author:
+      org: Internet Assigned Numbers Authority (IANA)
+    date: false
+  IANA-ICMP6:
+    title: Internet Control Message Protocol version 6 (ICMPv6) Parameters
+    target: https://www.iana.org/assignments/icmpv6-parameters
+    author:
+      org: Internet Assigned Numbers Authority (IANA)
+    date: false
 
 ...
 
@@ -349,7 +361,7 @@ unless that server is also the ULD server for the link in question.
 
 ## Service Name Registration
 
-IANA is requested to add the following entry to the "Service Name and Transport Protocol Port Number Registry", using the fields required by Section 8.1.1 of {{!RFC6335}}:
+IANA is requested to add the following entry to the "Service Name and Transport Protocol Port Number Registry" {{IANA-SRV}}, using the fields required by Section 8.1.1 of {{!RFC6335}}:
 
 | Field Name         | Value                         |
 |--------------------|-------------------------------|
@@ -364,7 +376,7 @@ IANA is requested to add the following entry to the "Service Name and Transport 
 
 ## IPv6 Neighbor Discovery Option {#iana-nd-option}
 
-IANA is requested to assign a new IPv6 Neighbor Discovery option type for the ULD Server Option in the "IPv6 Neighbor Discovery Option Formats" registry:
+IANA is requested to assign a new IPv6 Neighbor Discovery option type for the ULD Server Option in the "IPv6 Neighbor Discovery Option Formats" registry {{IANA-ICMP6}}:
 
 | Type | Description       | Reference     |
 |------|-------------------|---------------|
