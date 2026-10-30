@@ -65,7 +65,7 @@ A ULD server can be deployed as part of the network infrastructure, for example 
 This document uses the terms "infrastructure" and "ad-hoc" to refer to the two different ways a ULD server can be deployed:
 
 Infrastructure server:
-: The ULD server is a router on the link that has been intentionally deployed as part of the network infrastructure. At most one infrastructure server is expected per link.
+: The ULD server has been intentionally deployed as part of the network infrastructure, and is designated as such by a router on the link (see {{ra-option}}). At most one infrastructure server is expected per link.
 
 Ad-hoc server:
 : The ULD server is a device on the link that is not part of the network infrastructure but has the required capabilities, such as a SNAC router. Multiple ad-hoc servers may be present on the same link.
@@ -222,18 +222,64 @@ A server SHOULD durably record the sequence number it chooses on a link before a
 
 The rationale for these rules, and for the choice of D, W, and the range of R, is discussed in {{sequence-rationale}}.
 
-### Infrastructure RA Option
+### ULD Server RA Option {#ra-option}
 
-An infrastructure ULD server MUST additionally advertise its presence by including the ULD RA option in its IPv6 Router Advertisements. The presence of the RA option signals that the sender of the RA is a ULD server. The RA source address MUST match the numerically lowest link-local address the server advertises in its AAAA records. This ensures that clients can directly use this address to reach the server and for the tiebreaker comparison defined in {{client-behavior}}.
+The ULD Server (ULDS) RA option allows a ULD server to be advertised in IPv6 Router Advertisements (RAs) {{!RFC4861}}, providing IPv6 clients with a faster discovery path that does not rely on mDNS. Its format is shown in {{fig-ra-option}}.
 
-This additional advertisement mechanism serves a dual purpose: It provides IPv6 clients with a faster discovery path that does not rely on mDNS, and it enables the designation of the infrastructure ULD server to be protected by RA Guard {{?RFC6105}}. In order for this protection to be effective, IPv6-capable clients MUST use the RA option for infrastructure server discovery, either exclusively or to verify the infrastructure designation of a server discovered via DNS-SD. The DNS-SD advertisement remains necessary to enable clients already using an ad-hoc server to discover a new infrastructure server via their existing ULD connection (avoiding the need to wake for multicast RA reception), and to support IPv4-only clients.
+An infrastructure ULD server MUST be advertised via the ULDS option with the I flag set. In addition to faster discovery, this enables the designation of the infrastructure ULD server to be protected by RA Guard {{?RFC6105}}. In order for this protection to be effective, an IPv6-capable client MUST NOT use a server advertising priority 0 ({{priority}}) unless it holds a ULDS option that is valid for it, i.e. an unexpired option with the server's address and the I flag set, regardless of how it initially discovered the server. The DNS-SD advertisement remains necessary to enable clients already using an ad-hoc server to discover a new infrastructure server via their existing ULD connection (avoiding the need to wake for multicast RA reception), and to support IPv4-only clients.
+
+If the infrastructure ULD server is a router, it SHOULD directly advertise itself via the ULDS option. Alternatively, another router on the link, which need not be a default router, MAY designate it by sending a ULDS option with the server's address.
+
+An ad-hoc ULD server that is a router MAY advertise itself via the ULDS option with the I flag not set. This allows clients to bootstrap discovery by obtaining the server list from any such server via ULD, instead of browsing via mDNS (see {{client-behavior}}).
+
+The ULDS option SHOULD be included in unsolicited RAs, and MUST be included in the response to a Router Solicitation. When the server stops providing ULD service, the option SHOULD be sent with a Lifetime of zero in subsequent RAs, and then omitted. The same applies when an infrastructure server is no longer designated as such, unless it continues as an ad-hoc server and advertises itself with the I flag not set. A received option replaces any option previously received from the same router for the same server address.
+
+~~~~ aasvg
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|     Type      |    Length     |I|A|         Reserved          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                           Lifetime                            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                                                               |
++                                                               +
+|                                                               |
++             Server Address (present if A is set)              +
+|                                                               |
++                                                               +
+|                                                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~~
+{: #fig-ra-option title="ULDS Option Format"}
+
+Type:
+: TBD (see {{iana-nd-option}}).
+
+Length:
+: The length of the option in units of 8 octets: 1 if the A flag is not set, 3 if it is set. Receivers MUST ignore an option that is too short for the fields indicated by its flags, and MUST ignore any octets following those fields, so that future versions of this specification can append fields.
+
+I:
+: Infrastructure flag. If set, the server is designated as the infrastructure server for the link.
+
+A:
+: Server Address flag. If set, the option contains the Server Address field.
+
+Reserved:
+: MUST be set to zero by the sender and ignored by the receiver.
+
+Lifetime:
+: 32-bit unsigned integer. The time in seconds, relative to the time the RA is received, after which the option is no longer valid. A value of zero means that the server is no longer advertised. The Lifetime is independent of the Router Lifetime in the RA header. Its value SHOULD by default be at least three times MaxRtrAdvInterval (Section 6.2.1 of {{!RFC4861}}), so that the advertisement survives the loss of individual RAs.
+
+Server Address:
+: The IPv6 link-local address of the server. If the A flag is not set, the server's address is the source address of the RA. In either case, the server address MUST be the numerically lowest link-local address the server advertises in its AAAA records, so that clients can use it directly to reach the server and for the tiebreaker comparison defined in {{client-behavior}}.
 
 ### Client Behavior {#client-behavior}
 
 A client that wishes to use ULD on a particular link must first discover the preferred ULD server. Discovery follows a series of steps:
 
-1. Attempt to discover an infrastructure server.
-2. Failing that, browse for a list of ad-hoc servers, and determine the preferred one. Since all ULD servers MUST support IPv6, an IPv6 client need only query the IPv6 mDNS multicast address (FF02::FB) for this. Clients MAY also obtain the server list by querying any already-discovered ULD server.
+1. Attempt to discover an infrastructure server via the ULD Server RA option ({{ra-option}}).
+2. Failing that, browse for a list of ad-hoc servers, and determine the preferred one. Since all ULD servers MUST support IPv6, an IPv6 client need only query the IPv6 mDNS multicast address (FF02::FB) for this. Clients MAY also obtain the server list by querying any already-discovered ULD server, including an ad-hoc server advertised via RA.
 3. If no server is discovered, or if no discovered server appears to work, fall back to mDNS for .local service registration and discovery.
 
 Clients MUST determine server preference by comparing the following in order, with the first difference deciding:
@@ -245,11 +291,11 @@ Clients MUST determine server preference by comparing the following in order, wi
 4. For ad-hoc servers, the server's rank, calculated from the `seq` TXT key of all discovered servers ({{sequence}}). Lower values are preferred.
 5. As a tiebreaker, the server's IPv6 link-local address, compared numerically. Lower values are preferred. If the server's hostname has multiple AAAA records with link-local addresses, the numerically lowest of these MUST be used.
 
-Note that infrastructure servers are not compared by version or rank; ties between infrastructure servers are broken by address alone, using only the information available from the ULD RA option. Since a link is expected to have at most one infrastructure server, a tiebreaker is only needed as a last resort.
+Note that infrastructure servers are compared by address alone, not by version or rank, using only the information available from the ULD Server RA option. A link is expected to have at most one infrastructure server, so this comparison is only a last resort.
 
 Once a client has started to use a ULD server, it SHOULD cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client MUST also monitor the availability of the service. If the client detects that the service is no longer available, or that its server's advertised priority has changed, it MUST restart the discovery process.
 
-The client MUST consider its ULD server unavailable when operations directed at the server persistently fail (DNS queries time out, SRP lease refresh fails, or a DNS Push session is lost). When a client currently using an infrastructure server is awake and processing Router Advertisements, it MUST check for the continued presence of the ULD RA option. However, clients are not required to wake specifically for RA reception.
+The client MUST consider its ULD server unavailable when operations directed at the server persistently fail (DNS queries time out, SRP lease refresh fails, or a DNS Push session is lost). An IPv6 client using an infrastructure server MUST also consider it unavailable if it stops holding a valid ULD Server RA option for the server while awake and processing RAs. Clients are not required to wake specifically for RA reception, and an option that expires while a client is asleep does not by itself make the server unavailable.
 
 A server that has restarted may have lost the client's registrations, so a client that has registered services MUST re-register them when it detects that its server has restarted, i.e. that the server's sequence number has changed (see {{sequence}}). How and when a client checks for this is implementation-specific: for example, a client with a DNS Push session can use keepalives and check the server's sequence number when it re-establishes a lost session, while a client using only UDP can periodically query the server's TXT record to verify that it still responds and that the sequence number is unchanged.
 
@@ -278,7 +324,7 @@ The ideal deployment state for ULD is a single infrastructure server on each lin
 
 A device that implements ULD MAY provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it advertises as an ad-hoc server with a priority as described in {{priority}}. A device SHOULD only provide ad-hoc ULD service if it is expected to remain available on the link for extended periods (e.g. because it is mains-powered and does not normally sleep), and has sufficient resources to serve all clients on the link.
 
-In managed networks, the infrastructure ULD server designation MUST be enabled via explicit configuration by the network operator. Where multiple managed routers are present on a link, the operator MUST ensure that at most one advertises the ULD RA option.
+In managed networks, the infrastructure ULD server designation MUST be enabled via explicit configuration by the network operator. Where multiple managed routers are present on a link, the operator MUST ensure that at most one infrastructure server is advertised via the ULD Server RA option ({{ra-option}}). Where the infrastructure server is designated by a router other than the server itself, the operator MUST also configure the server to operate as an infrastructure server, so that it advertises priority 0 ({{priority}}).
 
 In unmanaged networks such as home networks, CE routers {{!RFC7084}} are typically autonomously operating devices that form the basis for the network infrastructure. A CE router that provides ULD SHOULD claim infrastructure status by default, since it is already the de facto infrastructure for the link. Indications that a device is serving in this role include being the default router (sending RAs with nonzero Router Lifetime) and providing services such as DHCPv4 that are inherently singleton on the link. A device that is not clearly the primary gateway for the link MUST NOT claim infrastructure status without explicit configuration.
 
@@ -315,6 +361,14 @@ IANA is requested to add the following entry to the "Service Name and Transport 
 | Reference          | This document                 |
 | Port Number        | None                          |
 | Assignment Notes   | Defined TXT keys: v, pri, seq |
+
+## IPv6 Neighbor Discovery Option {#iana-nd-option}
+
+IANA is requested to assign a new IPv6 Neighbor Discovery option type for the ULD Server Option in the "IPv6 Neighbor Discovery Option Formats" registry:
+
+| Type | Description       | Reference     |
+|------|-------------------|---------------|
+| TBD  | ULD Server Option | This document |
 
 --- back
 
