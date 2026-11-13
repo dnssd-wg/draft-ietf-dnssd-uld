@@ -179,37 +179,77 @@ All active ULD servers MUST advertise their presence using mDNS, as a DNS-SD ser
 
 - A PTR record at `_uld._tcp.local.` pointing to the service instance name
 - An SRV record for the service instance, pointing to the server's hostname and port 53
-- A TXT record for the service instance, containing a `pri` key indicating the server's priority as defined below
+- A TXT record for the service instance, containing
+  - a `v` key encoding the version of this specification implemented by the server as a US-ASCII decimal number in the range 1-255 (see {{version}})
+  - a `pri` key encoding the server's priority as a US-ASCII decimal number in the range 0-15 (see {{priority}})
+  - a `seq` key encoding the server's sequence number as a US-ASCII decimal number in the range 0-4294967295 (see {{sequence}})
+- At least one AAAA record for the server's hostname with a link-local IPv6 address
+- At least one A record for the server's hostname with an on-link IPv4 address, if the server accepts ULD client connections over IPv4 (see {{dual-stack}})
 
-The SRV priority and weight fields SHOULD be set to zero and MUST be ignored by clients. Per Section 5 of {{!RFC6763}}, these fields are used for selecting among multiple SRV records for a single service instance, which does not apply here; additionally, mDNS APIs do not typically expose them to applications.
+The server MAY advertise other address records for its hostname (e.g. AAAA records with routable addresses); these are not relevant for ULD clients.
 
-Selection among ULD servers is based on the numeric value of the `pri` TXT key (lower priority values are preferred). If there are multiple servers with the same priority, the one with the numerically lowest IPv6 link-local address MUST be preferred. Services MUST advertise a priority based on their deployment mode and capabilities:
+Because a ULD service instance is described by a single SRV record, its priority and weight fields SHOULD be set to zero per Section 5 of {{!RFC6763}}, and MUST be ignored when processing an advertisement. Advertisements lacking a version, priority, sequence number, or an IPv6 link-local address, or with a version, priority, or sequence number outside the specified range, are invalid and MUST be ignored.
 
-- 0: Infrastructure server
-- 100: Non-constrained ad-hoc server on a wired network link
-- 200: Non-constrained ad-hoc server on a Wi-Fi link
-- 1000: Constrained ad-hoc server, but otherwise well able to provide service
-- 65535: Ad-hoc server that can provide service if needed, but should not be preferred
+#### Version {#version}
+
+The `v` key identifies the version of this specification implemented by the server. Servers implementing this document MUST advertise `v=1`. Future versions of this specification may define higher values, along with different priority benchmarks for servers advertising them. Clients compare versions numerically as described in {{client-behavior}}, regardless of whether they implement that version, so that all clients converge on the same server.
+
+#### Server Priority {#priority}
+
+Servers advertise a priority based on their deployment mode and capabilities. Priority 0 identifies an infrastructure server. Ad-hoc servers advertise a priority between 1 and 15, chosen relative to the following benchmarks:
+
+- 4: Unconstrained ad-hoc server on a wired network link
+- 8: Unconstrained ad-hoc server on a Wi-Fi link
+- 12: Ad-hoc server with limited resources (e.g. CPU, memory, or network interface quality)
+
+Because priority is compared before rank (see {{client-behavior}}), any difference in priority overrides the preference for the longest-running server, and causes clients to migrate when a higher-priority server appears. An ad-hoc server SHOULD therefore advertise the benchmark value for its category, and only deviate from it to reflect a difference in capability that justifies such a migration, e.g. between classes of an implementation's own devices. Because a change in priority triggers discovery work and may cause clients to migrate, servers SHOULD base their priority on stable properties.
+
+#### Sequence Number {#sequence}
+
+Each server advertises a sequence number that allows clients to detect when it has restarted, and to order servers by age, so that a server that has been available for longer is preferred over one that has just appeared. Sequence numbers are unsigned 32-bit integers forming a ring modulo `D = 2^32`. The *distance* from sequence number A to B is calculated as `(B - A) mod D`.
+
+Given the set of distinct sequence numbers of all servers discovered on a link, the *oldest* and *newest* sequence numbers are determined as follows: If the set contains only one value, it is trivially both oldest and newest. Otherwise, the values are sorted in ascending order and the gap (i.e. the distance) from each value to the next is calculated, with the gap from the last value wrapping around to the first. The value at the start of the largest gap is the *newest* sequence number, and the value at the end of it is the *oldest*. If multiple gaps are equally large, the one starting at the numerically lowest value is used. The *rank* of a server is then calculated as the distance from the oldest sequence number to the server's sequence number: a lower rank indicates an older server.
+
+A server MUST choose its sequence number when it starts up or otherwise loses its registration state, and MUST NOT change it at any other time. Before choosing, it browses for other ULD servers on the link; this browse MUST include at least three queries (spaced as specified in {{Section 5.2 of !RFC6762}}), and the server MUST wait at least one second after the last query before choosing its value. This makes it unlikely that packet loss causes the server to miss the existing servers. If no other servers are found, the server chooses a value uniformly at random from the range 0-W, where `W = 3/4 D`. Otherwise, it chooses `(newest + 1 + R) mod D`, where R is a random value in the range 0-65535, making it the newest server. The random component makes it unlikely that a restarted server ends up with its previous sequence number.
+
+Servers that choose sequence numbers independently (e.g. after a power outage, or when previously separate links are joined) can end up spread around the ring with several gaps of similar size. The departure or addition of a server can then make the oldest designation jump to a different server. To reduce the likelihood of this, if the second-largest gap is larger than half the largest gap, a server MUST instead place itself near the middle of the second-largest gap, choosing `(start + floor(gap / 2) + R) mod D`, where start and gap describe that gap. This *split rule* does not apply if the most preferred discovered server is an ad-hoc server with the same version and priority as the starting server, and the resulting value would rank the starting server ahead of it. In that case, the server chooses `(newest + 1 + R) mod D` as above.
+
+A server SHOULD durably record the sequence number it chooses on a link before advertising it, and use it to avoid randomness when it next chooses a sequence number on that link. If no other servers are found, it SHOULD choose `(previous + 1) mod D`, where previous is its recorded sequence number, instead of a random value. Otherwise, it SHOULD use `R = 0` for the random component R in the above formulas, unless that would reproduce its previous sequence number, in which case it uses `R = 1`. This ensures that a restart is always detectable. A server that knows it is attached to a different link than when it recorded its sequence number SHOULD NOT use the recorded value.
+
+The rationale for these rules, and for the choice of D, W, and the range of R, is discussed in {{sequence-rationale}}.
 
 ### Infrastructure RA Option
 
-An infrastructure ULD server MUST additionally advertise its presence by including the ULD RA option in its IPv6 Router Advertisements. The presence of the RA option signals that the sender of the RA is a ULD server, and the server's link-local source address in the RA is the address clients use to reach it.
+An infrastructure ULD server MUST additionally advertise its presence by including the ULD RA option in its IPv6 Router Advertisements. The presence of the RA option signals that the sender of the RA is a ULD server. The RA source address MUST match the numerically lowest link-local address the server advertises in its AAAA records. This ensures that clients can directly use this address to reach the server and for the tiebreaker comparison defined in {{client-behavior}}.
 
 This additional advertisement mechanism serves a dual purpose: It provides IPv6 clients with a faster discovery path that does not rely on mDNS, and it enables the designation of the infrastructure ULD server to be protected by RA Guard {{?RFC6105}}. In order for this protection to be effective, IPv6-capable clients MUST use the RA option for infrastructure server discovery, either exclusively or to verify the infrastructure designation of a server discovered via DNS-SD. The DNS-SD advertisement remains necessary to enable clients already using an ad-hoc server to discover a new infrastructure server via their existing ULD connection (avoiding the need to wake for multicast RA reception), and to support IPv4-only clients.
 
-### Client Behavior
+### Client Behavior {#client-behavior}
 
 A client that wishes to use ULD on a particular link must first discover the preferred ULD server. Discovery follows a series of steps:
 
 1. Attempt to discover an infrastructure server.
-2. Failing that, browse for a list of ad-hoc servers, and determine the preferred one using the priority specified in the TXT record (see {{advertisement}}). Since all ULD servers MUST support IPv6, an IPv6 client need only query the IPv6 mDNS multicast address (FF02::FB) for this.
+2. Failing that, browse for a list of ad-hoc servers, and determine the preferred one. Since all ULD servers MUST support IPv6, an IPv6 client need only query the IPv6 mDNS multicast address (FF02::FB) for this. Clients MAY also obtain the server list by querying any already-discovered ULD server.
 3. If no server is discovered, or if no discovered server appears to work, fall back to mDNS for .local service registration and discovery.
+
+Clients MUST determine server preference by comparing the following in order, with the first difference deciding:
+
+{: type="a"}
+1. Whether the server is an infrastructure server (priority 0): infrastructure servers are preferred over ad-hoc servers.
+2. For ad-hoc servers, the server's version, i.e. the numeric value of the `v` TXT key ({{version}}). Higher values are preferred.
+3. For ad-hoc servers, the server's priority: the numeric value of the `pri` TXT key ({{priority}}). Lower values are preferred.
+4. For ad-hoc servers, the server's rank, calculated from the `seq` TXT key of all discovered servers ({{sequence}}). Lower values are preferred.
+5. As a tiebreaker, the server's IPv6 link-local address, compared numerically. Lower values are preferred. If the server's hostname has multiple AAAA records with link-local addresses, the numerically lowest of these MUST be used.
+
+Note that infrastructure servers are not compared by version or rank; ties between infrastructure servers are broken by address alone, using only the information available from the ULD RA option. Since a link is expected to have at most one infrastructure server, a tiebreaker is only needed as a last resort.
 
 Once a client has started to use a ULD server, it SHOULD cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client MUST also monitor the availability of the service. If the client detects that the service is no longer available, it MUST restart the discovery process.
 
 The client MUST consider its ULD server unavailable when operations directed at the server persistently fail (DNS queries time out, SRP lease refresh fails, or a DNS Push session is lost). When a client currently using an infrastructure server is awake and processing Router Advertisements, it MUST check for the continued presence of the ULD RA option. However, clients are not required to wake specifically for RA reception.
 
-As motivated in {{convergence}}, clients of an ad-hoc server MUST additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server that is preferable to the current server according to the rules defined in {{advertisement}}. Clients SHOULD utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it MUST re-register all its services with the new server.
+A server that has restarted may have lost the client's registrations, so a client that has registered services MUST re-register them when it detects that its server has restarted, i.e. that the server's sequence number has changed (see {{sequence}}). How and when a client checks for this is implementation-specific: for example, a client with a DNS Push session can use keepalives and check the server's sequence number when it re-establishes a lost session, while a client using only UDP can periodically query the server's TXT record to verify that it still responds and that the sequence number is unchanged.
+
+As motivated in {{convergence}}, clients of an ad-hoc server MUST additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server. Clients SHOULD utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it MUST re-register all its services with the new server.
 
 ## IPv4 and Dual-Stack Operation {#dual-stack}
 
@@ -217,13 +257,13 @@ ULD is designed primarily for IPv6 operation: Infrastructure server discovery us
 
 A ULD server MUST therefore participate in mDNS on both the IPv6 multicast address (FF02::FB) and the IPv4 multicast address (224.0.0.251), unless deployed in an IPv6-only environment. The server SHOULD also accept ULD client connections over IPv4.
 
-Clients MAY connect to the ULD server over IPv4 using an on-link address. When a server receives ULD traffic over IPv4, it MUST verify that the source address falls within a directly-connected subnet of the receiving interface before processing a ".local." request. Even when connecting over IPv4, clients MUST use the server's IPv6 link-local address for the tiebreaker comparison defined in {{advertisement}}; this ensures all clients converge on the same server regardless of transport. If the preferred server is not reachable over IPv4, an IPv4-only client MUST fall back to mDNS. As the RA-based discovery mechanism is IPv6-only, an IPv4-only client discovers all servers, including the infrastructure server, via mDNS.
+Clients MAY connect to the ULD server over IPv4 using an on-link address. When a server receives ULD traffic over IPv4, it MUST verify that the source address falls within a directly-connected subnet of the receiving interface before processing a ".local." request. Even when connecting over IPv4, clients MUST use the server's IPv6 link-local address for the tiebreaker comparison defined in {{client-behavior}}; this ensures all clients converge on the same server regardless of transport. If the preferred server is not reachable over IPv4, an IPv4-only client MUST fall back to mDNS. As the RA-based discovery mechanism is IPv6-only, an IPv4-only client discovers all servers, including the infrastructure server, via mDNS.
 
 # Operational Considerations
 
 The ideal deployment state for ULD is a single infrastructure server on each link, providing streamlined discovery for all clients.
 
-A device that implements ULD MAY provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it MUST advertise as an ad-hoc server with a priority reflecting its capabilities.
+A device that implements ULD MAY provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it advertises as an ad-hoc server with a priority as described in {{advertisement}}. A device SHOULD only provide ad-hoc ULD service if it is expected to remain available on the link for extended periods (e.g. because it is mains-powered and does not normally sleep), and has sufficient resources to serve all clients on the link.
 
 In managed networks, the infrastructure ULD server designation MUST be enabled via explicit configuration by the network operator. Where multiple managed routers are present on a link, the operator MUST ensure that at most one advertises the ULD RA option.
 
@@ -261,7 +301,7 @@ IANA is requested to add the following entry to the "Service Name and Transport 
 | Description        | Unicast Local Discovery       |
 | Reference          | This document                 |
 | Port Number        | None                          |
-| Assignment Notes   | Defined TXT keys: pri         |
+| Assignment Notes   | Defined TXT keys: v, pri, seq |
 
 --- back
 
@@ -288,6 +328,28 @@ At first glance, multiple ULD servers on a link would seem to provide workable s
 This can be addressed either through server-to-server replication of registrations {{?I-D.ietf-dnssd-srp-replication}}, or by having all clients converge on the same server — that is, all clients independently select the same server using a deterministic priority mechanism. ULD takes the latter approach: since its target deployment state is a stable infrastructure server per link, the added complexity of replication is not warranted.
 
 Convergence also needs to be maintained over time: Ad-hoc servers in particular can appear and disappear at any time, and an infrastructure server may become available after clients have already begun using an ad-hoc server. If discovery were a one-time process, clients performing it at different times could observe different sets of available servers and make different server choices, breaking convergence. Therefore, discovery of ULD servers must be an ongoing process: Clients need to monitor the availability of their chosen server, discover newly available servers, and migrate to a higher-priority server when one appears.
+
+# Rationale for Sequence Number Rules {#sequence-rationale}
+
+Every change of the preferred server causes migration work for clients. The sequence number rules specified in {{sequence}} enable clients to prefer the oldest server of a given version and priority, i.e. the one that has been available the longest, so that a new server appearing does not cause migration. The rules work within three constraints: every client must derive the same order from the DNS-SD advertisements alone; a server's value must stay fixed while it runs, so that a change signals a restart; and servers cannot be assumed to have synchronized clocks or persistent state, which rules out advertising a start time.
+
+The basic scheme is similar to a Lamport clock: a starting server chooses a value one step past the newest value it sees. As long as every server sees the others when it starts, the values form a single "run" of closely spaced values, and the largest gap is the remainder of the ring, between the newest and the oldest server. Because each restart moves the newest value forward, the run moves around the ring of size D over the lifetime of the network. Finding the oldest server by the largest gap rather than by absolute value means that this movement, including wrapping past D, does not affect the result. The random component R in each step serves restart detection: without it, a restarting newest server would choose its predecessor's value + 1, i.e. exactly its own previous value. R reduces this to a probability of 1 in 65536. D = 2^32 leaves ample room for steps of this size while keeping values within a common integer size.
+
+The ranking is not entirely stable: the oldest designation can move to a different server while the server that previously held it is still present. Because ranks are measured from the oldest server, such a *spurious re-ranking* changes every server's rank. It causes an unnecessary migration if it changes the preferred server, but is otherwise harmless. The rules and the choice of parameters aim to make spurious re-rankings rare, and in particular to avoid networks in which they occur persistently.
+
+The oldest server is the one at the end of the largest gap, so a spurious re-ranking means that a different gap has become the largest without the oldest server departing. This can happen in two ways: A departure can merge the two gaps adjacent to the departing server into one that exceeds the largest gap. Alternatively, a starting server can choose a value inside the largest gap that is close enough to its end to make that server itself the oldest. Within a single run, neither is a practical concern: a starting server places itself at the start of the largest gap, and it takes at least tens of thousands of restarts (while a subset of servers stays up) for another gap to grow comparably large. Spurious re-rankings therefore mainly occur after servers have chosen their values without seeing each other, in which case they choose from the range 0-W. This happens in two situations, which W affects in opposite directions:
+
+1. Simultaneous start: All servers start at the same time, e.g. after a power outage, and choose values scattered across the range, which can leave several large gaps of similar size. A smaller W is better here: the gaps within the range add up to at most W, while the gap spanning the rest of the ring is at least D - W. If W is at most D/2, merging gaps through departures cannot overtake the largest gap, and only the departure of the oldest server itself changes the designation. Above D/2 this is no longer guaranteed, and the chance of competing gaps grows gradually with W.
+
+2. Lone start: A single server fails to discover the existing servers when it starts, e.g. because of packet loss during discovery or a temporary network partition. Once the other servers become visible, it is designated oldest if its value fell in the half of the largest gap that precedes the oldest server, which causes a spurious re-ranking. That is roughly half the ring, so averaged over all positions of the run this happens half the time, whatever W is. What W determines is how much of the range 0-W can lie in that half. If W is at most D/2, the whole range can lie inside it, so that in some networks nearly every lone start causes a spurious re-ranking. If W is larger than D/2, the range is longer than half the ring, so it cannot lie entirely inside that half, and the probability is at most D/(2W). Joining previously separate links has a similar effect to a lone start, except that the clients on one of the links have to migrate in any case.
+
+The choice of W = 3/4 D is a compromise between the two cases. It limits the probability of a spurious re-ranking on a lone start to at most 2/3, wherever the run has moved. (A larger D would not help, because a W of at most D/2 would still leave some networks in which nearly every lone start causes a spurious re-ranking.) A simultaneous start leaves a gap of at least D/4 spanning the rest of the ring, which is usually still the largest.
+
+After a simultaneous start, a lone start, or the joining of links, values can end up scattered, with several gaps of similar size. In that state, a departure can easily merge two gaps into one that exceeds the largest. The split rule aims to keep every gap other than the largest below half the size of the largest, so that this cannot happen. It gives up exact age order among the other servers, but does not change which server is designated oldest, and therefore leaves the ranks of existing servers unchanged. The exception to the split rule ensures that a split does not itself cause a migration.
+
+Ranks are computed over all servers on the link rather than separately for each version and priority. A starting server therefore only needs to discover some existing server, of any version or priority, to choose a value within the existing run instead of from the range 0-W. This also keeps servers of the same type that restart together, e.g. after a software update, within the existing run. Ranking per priority would make lone starts more likely, and would require a server to choose a new sequence number if it changes its priority.
+
+Persisting the previous sequence number gives a server information about its position relative to the other servers. A server that restarts alone at its previous value + 1 lands within the existing run rather than at a random position, which avoids most spurious re-rankings from lone starts. Servers that persist their values also keep their relative order across a simultaneous restart, so their values do not become scattered. Their restarts are always detectable as well.
 
 # Acknowledgments
 {:numbered="false"}
