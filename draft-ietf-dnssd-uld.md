@@ -196,7 +196,7 @@ The `v` key identifies the version of this specification implemented by the serv
 
 #### Server Priority {#priority}
 
-Servers advertise a priority based on their deployment mode and capabilities. Priority 0 identifies an infrastructure server. Ad-hoc servers advertise a priority between 1 and 15, chosen relative to the following benchmarks:
+Servers advertise a priority based on their deployment mode and capabilities. An infrastructure server MUST advertise priority 0. Ad-hoc servers MUST advertise a priority between 1 and 15, chosen relative to the following benchmarks:
 
 - 4: Unconstrained ad-hoc server on a wired network link
 - 8: Unconstrained ad-hoc server on a Wi-Fi link
@@ -243,7 +243,7 @@ Clients MUST determine server preference by comparing the following in order, wi
 
 Note that infrastructure servers are not compared by version or rank; ties between infrastructure servers are broken by address alone, using only the information available from the ULD RA option. Since a link is expected to have at most one infrastructure server, a tiebreaker is only needed as a last resort.
 
-Once a client has started to use a ULD server, it SHOULD cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client MUST also monitor the availability of the service. If the client detects that the service is no longer available, it MUST restart the discovery process.
+Once a client has started to use a ULD server, it SHOULD cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client MUST also monitor the availability of the service. If the client detects that the service is no longer available, or that its server's advertised priority has changed, it MUST restart the discovery process.
 
 The client MUST consider its ULD server unavailable when operations directed at the server persistently fail (DNS queries time out, SRP lease refresh fails, or a DNS Push session is lost). When a client currently using an infrastructure server is awake and processing Router Advertisements, it MUST check for the continued presence of the ULD RA option. However, clients are not required to wake specifically for RA reception.
 
@@ -263,7 +263,7 @@ Clients MAY connect to the ULD server over IPv4 using an on-link address. When a
 
 The ideal deployment state for ULD is a single infrastructure server on each link, providing streamlined discovery for all clients.
 
-A device that implements ULD MAY provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it advertises as an ad-hoc server with a priority as described in {{advertisement}}. A device SHOULD only provide ad-hoc ULD service if it is expected to remain available on the link for extended periods (e.g. because it is mains-powered and does not normally sleep), and has sufficient resources to serve all clients on the link.
+A device that implements ULD MAY provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it advertises as an ad-hoc server with a priority as described in {{priority}}. A device SHOULD only provide ad-hoc ULD service if it is expected to remain available on the link for extended periods (e.g. because it is mains-powered and does not normally sleep), and has sufficient resources to serve all clients on the link.
 
 In managed networks, the infrastructure ULD server designation MUST be enabled via explicit configuration by the network operator. Where multiple managed routers are present on a link, the operator MUST ensure that at most one advertises the ULD RA option.
 
