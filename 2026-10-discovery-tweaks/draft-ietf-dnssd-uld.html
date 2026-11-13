@@ -10,26 +10,26 @@
 <meta content="
        DNS Service Discovery provides several mechanisms whereby hosts can discover and advertise services on an IP network. Such discovery can be done using Multicast DNS (mDNS) or DNS, and advertising can be done with DNS-SD Service Registration Protocol (SRP) or mDNS. This document defines Unicast Local Discovery (ULD), a service that combines an SRP registrar, a Discovery Proxy, and an Advertising Proxy. Hosts can use a ULD server to advertise and discover services on the local link entirely via unicast SRP and DNS while remaining interoperable with hosts that use mDNS. 
     " name="description">
-<meta content="xml2rfc 3.34.1" name="generator">
+<meta content="xml2rfc 3.35.0" name="generator">
 <meta content="DNSSD" name="keyword">
 <meta content="mDNS" name="keyword">
 <meta content="DNS" name="keyword">
 <meta content="ULD" name="keyword">
 <meta content="draft-ietf-dnssd-uld-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.34.1
-    Python 3.14.8
-    ConfigArgParse 1.8.0
+  xml2rfc 3.35.0
+    Python 3.14.10
+    ConfigArgParse 1.9.0
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.12.2
+    platformdirs 4.14.3
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.9.1
+    wcwidth 0.9.4
 -->
 <link href="draft-ietf-dnssd-uld.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1226,11 +1226,11 @@ li > p:last-of-type:only-child {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Unicast Local Discovery</td>
-<td class="right">October 2026</td>
+<td class="right">November 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Lemon &amp; Sperling</td>
-<td class="center">Expires 18 April 2027</td>
+<td class="center">Expires 17 May 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1246,12 +1246,12 @@ li > p:last-of-type:only-child {
 <a href="https://www.rfc-editor.org/rfc/rfc6762" class="eref">6762</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-10-15" class="published">15 October 2026</time>
+<time datetime="2026-11-13" class="published">13 November 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-04-18">18 April 2027</time></dd>
+<dd class="expires"><time datetime="2027-05-17">17 May 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1304,7 +1304,7 @@ li > p:last-of-type:only-child {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 18 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 17 May 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1398,6 +1398,11 @@ li > p:last-of-type:only-child {
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-service-name-registration" class="internal xref">Service Name Registration</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-references" class="internal xref">References</a></p>
@@ -1420,10 +1425,13 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.12.1"><a href="#appendix-C" class="auto internal xref">Appendix C</a>.  <a href="#name-convergence-on-a-preferred-" class="internal xref">Convergence on a Preferred Server</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#appendix-D" class="auto internal xref">Appendix D</a>.  <a href="#name-rationale-for-sequence-numb" class="internal xref">Rationale for Sequence Number Rules</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-E" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.14.1"><a href="#appendix-E" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#appendix-F" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1665,10 +1673,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
           <h4 id="name-server-advertisement">
 <a href="#section-3.3.1" class="section-number selfRef">3.3.1. </a><a href="#name-server-advertisement" class="section-name selfRef">Server Advertisement</a>
           </h4>
-<p id="section-3.3.1-1">All active ULD servers <span class="bcp14">MUST</span> advertise their presence using mDNS, as a DNS-SD service instance of type <code>&lt;uld-service-name&gt;._tcp</code>. The service advertisement consists of:<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.1-1">All active ULD servers <span class="bcp14">MUST</span> advertise their presence using mDNS, as a DNS-SD service instance of type <code>_uld._tcp</code>. The service advertisement consists of:<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.3.1-2.1">
-              <p id="section-3.3.1-2.1.1">A PTR record at <code>&lt;uld-service-name&gt;._tcp.local.</code> pointing to the service instance name<a href="#section-3.3.1-2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-3.3.1-2.1.1">A PTR record at <code>_uld._tcp.local.</code> pointing to the service instance name<a href="#section-3.3.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.3.1-2.2">
               <p id="section-3.3.1-2.2.1">An SRV record for the service instance, pointing to the server's hostname and port 53<a href="#section-3.3.1-2.2.1" class="pilcrow">¶</a></p>
@@ -1677,10 +1685,13 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
               <p id="section-3.3.1-2.3.1">A TXT record for the service instance, containing<a href="#section-3.3.1-2.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.3.1-2.3.2.1">
-                  <p id="section-3.3.1-2.3.2.1.1">a <code>pri</code> key encoding the server's priority as a US-ASCII decimal number in the range 0-65535 (see <a href="#priority" class="auto internal xref">Section 3.3.1.1</a>)<a href="#section-3.3.1-2.3.2.1.1" class="pilcrow">¶</a></p>
+                  <p id="section-3.3.1-2.3.2.1.1">a <code>v</code> key encoding the version of this specification implemented by the server as a US-ASCII decimal number in the range 1-255 (see <a href="#version" class="auto internal xref">Section 3.3.1.1</a>)<a href="#section-3.3.1-2.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-3.3.1-2.3.2.2">
-                  <p id="section-3.3.1-2.3.2.2.1">a <code>seq</code> key encoding the server's sequence number as a US-ASCII decimal number in the range 0-4294967295 (see <a href="#sequence" class="auto internal xref">Section 3.3.1.2</a>)<a href="#section-3.3.1-2.3.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-3.3.1-2.3.2.2.1">a <code>pri</code> key encoding the server's priority as a US-ASCII decimal number in the range 0-15 (see <a href="#priority" class="auto internal xref">Section 3.3.1.2</a>)<a href="#section-3.3.1-2.3.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-3.3.1-2.3.2.3">
+                  <p id="section-3.3.1-2.3.2.3.1">a <code>seq</code> key encoding the server's sequence number as a US-ASCII decimal number in the range 0-4294967295 (see <a href="#sequence" class="auto internal xref">Section 3.3.1.3</a>)<a href="#section-3.3.1-2.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
@@ -1692,42 +1703,46 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 </li>
           </ul>
 <p id="section-3.3.1-3">The server <span class="bcp14">MAY</span> advertise other address records for its hostname (e.g. AAAA records with routable addresses); these are not relevant for ULD clients.<a href="#section-3.3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.3.1-4">Because a ULD service instance is described by a single SRV record, its priority and weight fields <span class="bcp14">SHOULD</span> be set to zero per Section 5 of <span>[<a href="#RFC6763" class="cite xref">RFC6763</a>]</span>, and <span class="bcp14">MUST</span> be ignored when processing an advertisement.
-Advertisements lacking a priority, sequence number, or an IPv6 link-local address are invalid and <span class="bcp14">MUST</span> be ignored.<a href="#section-3.3.1-4" class="pilcrow">¶</a></p>
-<div id="priority">
+<p id="section-3.3.1-4">Because a ULD service instance is described by a single SRV record, its priority and weight fields <span class="bcp14">SHOULD</span> be set to zero per Section 5 of <span>[<a href="#RFC6763" class="cite xref">RFC6763</a>]</span>, and <span class="bcp14">MUST</span> be ignored when processing an advertisement. Advertisements lacking a version, priority, sequence number, or an IPv6 link-local address, or with a version, priority, or sequence number outside the specified range, are invalid and <span class="bcp14">MUST</span> be ignored.<a href="#section-3.3.1-4" class="pilcrow">¶</a></p>
+<div id="version">
 <section id="section-3.3.1.1">
-            <h5 id="name-server-priority">
-<a href="#section-3.3.1.1" class="section-number selfRef">3.3.1.1. </a><a href="#name-server-priority" class="section-name selfRef">Server Priority</a>
+            <h5 id="name-version">
+<a href="#section-3.3.1.1" class="section-number selfRef">3.3.1.1. </a><a href="#name-version" class="section-name selfRef">Version</a>
             </h5>
-<p id="section-3.3.1.1-1">Servers advertise a priority based on their deployment mode and capabilities:<a href="#section-3.3.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.1-1">The <code>v</code> key identifies the version of this specification implemented by the server. Servers implementing this document <span class="bcp14">MUST</span> advertise <code>v=1</code>. Future versions of this specification may define higher values, along with different priority benchmarks for servers advertising them. Clients compare versions numerically as described in <a href="#client-behavior" class="auto internal xref">Section 3.3.3</a>, regardless of whether they implement that version, so that all clients converge on the same server.<a href="#section-3.3.1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="priority">
+<section id="section-3.3.1.2">
+            <h5 id="name-server-priority">
+<a href="#section-3.3.1.2" class="section-number selfRef">3.3.1.2. </a><a href="#name-server-priority" class="section-name selfRef">Server Priority</a>
+            </h5>
+<p id="section-3.3.1.2-1">Servers advertise a priority based on their deployment mode and capabilities. Priority 0 identifies an infrastructure server. Ad-hoc servers advertise a priority between 1 and 15, chosen relative to the following benchmarks:<a href="#section-3.3.1.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.3.1.1-2.1">
-                <p id="section-3.3.1.1-2.1.1">0: Infrastructure server<a href="#section-3.3.1.1-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.3.1.2-2.1">
+                <p id="section-3.3.1.2-2.1.1">4: Unconstrained ad-hoc server on a wired network link<a href="#section-3.3.1.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-3.3.1.1-2.2">
-                <p id="section-3.3.1.1-2.2.1">2000-2099: Unconstrained ad-hoc server on a wired network link<a href="#section-3.3.1.1-2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.3.1.2-2.2">
+                <p id="section-3.3.1.2-2.2.1">8: Unconstrained ad-hoc server on a Wi-Fi link<a href="#section-3.3.1.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-3.3.1.1-2.3">
-                <p id="section-3.3.1.1-2.3.1">4000-4099: Unconstrained ad-hoc server on a Wi-Fi link<a href="#section-3.3.1.1-2.3.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-3.3.1.1-2.4">
-                <p id="section-3.3.1.1-2.4.1">6000-6099: Ad-hoc server with limited resources (e.g. CPU, memory, or network interface quality)<a href="#section-3.3.1.1-2.4.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.3.1.2-2.3">
+                <p id="section-3.3.1.2-2.3.1">12: Ad-hoc server with limited resources (e.g. CPU, memory, or network interface quality)<a href="#section-3.3.1.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
-<p id="section-3.3.1.1-3">An ad-hoc server's priority <span class="bcp14">SHOULD</span> be chosen from the range reflecting its capabilities. Priority values outside of these ranges are reserved for future use; clients compare all priority values numerically regardless (see <a href="#client-behavior" class="auto internal xref">Section 3.3.3</a>).<a href="#section-3.3.1.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.3.1.1-4">The ranges define a coarse preference ordering between server categories; the choice of priority value within the range is implementation-specific, and is intended for ordering an implementation's own devices relative to each other (e.g. based on specific hardware capabilities). Implementations that have no basis for such a choice <span class="bcp14">SHOULD</span> use an offset of 50 within the range. Because a change in priority triggers discovery work for clients and may cause them to migrate between servers, servers <span class="bcp14">SHOULD</span> base their priority on stable properties.<a href="#section-3.3.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.2-3">Because priority is compared before rank (see <a href="#client-behavior" class="auto internal xref">Section 3.3.3</a>), any difference in priority overrides the preference for the longest-running server, and causes clients to migrate when a higher-priority server appears. An ad-hoc server <span class="bcp14">SHOULD</span> therefore advertise the benchmark value for its category, and only deviate from it to reflect a difference in capability that justifies such a migration, e.g. between classes of an implementation's own devices. Because a change in priority triggers discovery work and may cause clients to migrate, servers <span class="bcp14">SHOULD</span> base their priority on stable properties.<a href="#section-3.3.1.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sequence">
-<section id="section-3.3.1.2">
-            <h5 id="name-sequence-numbers">
-<a href="#section-3.3.1.2" class="section-number selfRef">3.3.1.2. </a><a href="#name-sequence-numbers" class="section-name selfRef">Sequence Numbers</a>
+<section id="section-3.3.1.3">
+            <h5 id="name-sequence-number">
+<a href="#section-3.3.1.3" class="section-number selfRef">3.3.1.3. </a><a href="#name-sequence-number" class="section-name selfRef">Sequence Number</a>
             </h5>
-<p id="section-3.3.1.2-1">Each server advertises a sequence number that allows clients to order servers by age, so that a server that has been available for longer is preferred over one that has just appeared, and to detect when a server has restarted. Sequence numbers are unsigned 32-bit integers forming a ring modulo 2^32. The <em>distance</em> from sequence number A to B is calculated as <code>(B - A) mod 2^32</code>.<a href="#section-3.3.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.3.1.2-2">Given the set of distinct sequence numbers of all servers discovered on a link, the <em>oldest</em> and <em>newest</em> sequence numbers are determined as follows: If the set contains only one value, it is trivially both oldest and newest. Otherwise, the values are sorted in ascending order and the gap (i.e. the distance) from each value to the next is calculated, with the gap from the last value wrapping around to the first. The value at the start of the largest gap is the <em>newest</em> sequence number, and the value at the end of it is the <em>oldest</em>. If multiple gaps are equally large, the one starting at the numerically lowest value is used.<a href="#section-3.3.1.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.3.1.2-3">The <em>rank</em> of an ad-hoc server is then calculated as the distance from the oldest sequence number to the server's sequence number: a lower rank indicates an older server. Infrastructure servers are not ordered by age and always have rank 0, regardless of their sequence number.<a href="#section-3.3.1.2-3" class="pilcrow">¶</a></p>
-<p id="section-3.3.1.2-4">A server <span class="bcp14">MUST</span> choose its sequence number when it starts up or otherwise loses its registration state, after browsing for other ULD servers on the link, and <span class="bcp14">MUST NOT</span> change it otherwise. If no other servers are found, the server chooses a value uniformly at random. Otherwise, it chooses <code>(newest + 1 + R) mod 2^32</code>, where R is a random value in the range 0-65535, making it the newest server. The random component makes it unlikely that a restarted server ends up with its previous sequence number.<a href="#section-3.3.1.2-4" class="pilcrow">¶</a></p>
-<p id="section-3.3.1.2-5">Servers that choose sequence numbers independently (e.g. after a power outage, or when previously separate links are joined) can end up spread around the ring without a single dominant gap. In a state where several gaps have almost equal sizes, departure or addition of servers can cause the largest gap and therefore the oldest server designation to jump. To reduce the likelihood of this happening, if the second-largest gap is larger than half the largest gap, a server <span class="bcp14">SHOULD</span> instead choose <code>(start + floor(gap / 2) + R) mod 2^32</code>, where start and gap describe the second-largest gap.<a href="#section-3.3.1.2-5" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.3-1">Each server advertises a sequence number that allows clients to detect when it has restarted, and to order servers by age, so that a server that has been available for longer is preferred over one that has just appeared. Sequence numbers are unsigned 32-bit integers forming a ring modulo <code>D = 2^32</code>. The <em>distance</em> from sequence number A to B is calculated as <code>(B - A) mod D</code>.<a href="#section-3.3.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.3-2">Given the set of distinct sequence numbers of all servers discovered on a link, the <em>oldest</em> and <em>newest</em> sequence numbers are determined as follows: If the set contains only one value, it is trivially both oldest and newest. Otherwise, the values are sorted in ascending order and the gap (i.e. the distance) from each value to the next is calculated, with the gap from the last value wrapping around to the first. The value at the start of the largest gap is the <em>newest</em> sequence number, and the value at the end of it is the <em>oldest</em>. If multiple gaps are equally large, the one starting at the numerically lowest value is used. The <em>rank</em> of a server is then calculated as the distance from the oldest sequence number to the server's sequence number: a lower rank indicates an older server.<a href="#section-3.3.1.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.3-3">A server <span class="bcp14">MUST</span> choose its sequence number when it starts up or otherwise loses its registration state, and <span class="bcp14">MUST NOT</span> change it at any other time. Before choosing, it browses for other ULD servers on the link; this browse <span class="bcp14">MUST</span> include at least three queries (spaced as specified in <span><a href="https://rfc-editor.org/rfc/rfc6762#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>), and the server <span class="bcp14">MUST</span> wait at least one second after the last query before choosing its value. This makes it unlikely that packet loss causes the server to miss the existing servers. If no other servers are found, the server chooses a value uniformly at random from the range 0-W, where <code>W = 3/4 D</code>. Otherwise, it chooses <code>(newest + 1 + R) mod D</code>, where R is a random value in the range 0-65535, making it the newest server. The random component makes it unlikely that a restarted server ends up with its previous sequence number.<a href="#section-3.3.1.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.3-4">Servers that choose sequence numbers independently (e.g. after a power outage, or when previously separate links are joined) can end up spread around the ring with several gaps of similar size. The departure or addition of a server can then make the oldest designation jump to a different server. To reduce the likelihood of this, if the second-largest gap is larger than half the largest gap, a server <span class="bcp14">MUST</span> instead place itself near the middle of the second-largest gap, choosing <code>(start + floor(gap / 2) + R) mod D</code>, where start and gap describe that gap. This <em>split rule</em> does not apply if the most preferred discovered server is an ad-hoc server with the same version and priority as the starting server, and the resulting value would rank the starting server ahead of it. In that case, the server chooses <code>(newest + 1 + R) mod D</code> as above.<a href="#section-3.3.1.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.3-5">A server <span class="bcp14">SHOULD</span> durably record the sequence number it chooses on a link before advertising it, and use it to avoid randomness when it next chooses a sequence number on that link. If no other servers are found, it <span class="bcp14">SHOULD</span> choose <code>(previous + 1) mod D</code>, where previous is its recorded sequence number, instead of a random value. Otherwise, it <span class="bcp14">SHOULD</span> use <code>R = 0</code> for the random component R in the above formulas, unless that would reproduce its previous sequence number, in which case it uses <code>R = 1</code>. This ensures that a restart is always detectable. A server that knows it is attached to a different link than when it recorded its sequence number <span class="bcp14">SHOULD NOT</span> use the recorded value.<a href="#section-3.3.1.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.3-6">The rationale for these rules, and for the choice of D, W, and the range of R, is discussed in <a href="#sequence-rationale" class="auto internal xref">Appendix D</a>.<a href="#section-3.3.1.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1758,22 +1773,28 @@ Advertisements lacking a priority, sequence number, or an IPv6 link-local addres
               <p id="section-3.3.3-2.3.1">If no server is discovered, or if no discovered server appears to work, fall back to mDNS for .local service registration and discovery.<a href="#section-3.3.3-2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
-<p id="section-3.3.3-3">Clients <span class="bcp14">MUST</span> determine server preference by comparing the following values in order, with the first difference deciding and lower values being preferred:<a href="#section-3.3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-3">Clients <span class="bcp14">MUST</span> determine server preference by comparing the following in order, with the first difference deciding:<a href="#section-3.3.3-3" class="pilcrow">¶</a></p>
 <ol start="1" type="a" class="normal type-a" id="section-3.3.3-4">
 <li id="section-3.3.3-4.1">
-              <p id="section-3.3.3-4.1.1">The server's priority: the numeric value of the <code>pri</code> TXT key (<a href="#priority" class="auto internal xref">Section 3.3.1.1</a>)<a href="#section-3.3.3-4.1.1" class="pilcrow">¶</a></p>
+              <p id="section-3.3.3-4.1.1">Whether the server is an infrastructure server (priority 0): infrastructure servers are preferred over ad-hoc servers.<a href="#section-3.3.3-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-3.3.3-4.2">
-              <p id="section-3.3.3-4.2.1">The server's rank: calculated based on the <code>seq</code> TXT key of all discovered servers (<a href="#sequence" class="auto internal xref">Section 3.3.1.2</a>)<a href="#section-3.3.3-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-3.3.3-4.2.1">For ad-hoc servers, the server's version, i.e. the numeric value of the <code>v</code> TXT key (<a href="#version" class="auto internal xref">Section 3.3.1.1</a>). Higher values are preferred.<a href="#section-3.3.3-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-3.3.3-4.3">
-              <p id="section-3.3.3-4.3.1">The server's IPv6 link-local address, compared numerically. If the server's hostname has multiple AAAA records with link-local addresses, the numerically lowest of these <span class="bcp14">MUST</span> be used.<a href="#section-3.3.3-4.3.1" class="pilcrow">¶</a></p>
+              <p id="section-3.3.3-4.3.1">For ad-hoc servers, the server's priority: the numeric value of the <code>pri</code> TXT key (<a href="#priority" class="auto internal xref">Section 3.3.1.2</a>). Lower values are preferred.<a href="#section-3.3.3-4.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-3.3.3-4.4">
+              <p id="section-3.3.3-4.4.1">For ad-hoc servers, the server's rank, calculated from the <code>seq</code> TXT key of all discovered servers (<a href="#sequence" class="auto internal xref">Section 3.3.1.3</a>). Lower values are preferred.<a href="#section-3.3.3-4.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-3.3.3-4.5">
+              <p id="section-3.3.3-4.5.1">As a tiebreaker, the server's IPv6 link-local address, compared numerically. Lower values are preferred. If the server's hostname has multiple AAAA records with link-local addresses, the numerically lowest of these <span class="bcp14">MUST</span> be used.<a href="#section-3.3.3-4.5.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
-<p id="section-3.3.3-5">Note that the first two values are always 0 for infrastructure servers; this means that ties between infrastructure servers can be broken with only the information available from the ULD RA option.<a href="#section-3.3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-5">Note that infrastructure servers are not compared by version or rank; ties between infrastructure servers are broken by address alone, using only the information available from the ULD RA option. Since a link is expected to have at most one infrastructure server, a tiebreaker is only needed as a last resort.<a href="#section-3.3.3-5" class="pilcrow">¶</a></p>
 <p id="section-3.3.3-6">Once a client has started to use a ULD server, it <span class="bcp14">SHOULD</span> cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client <span class="bcp14">MUST</span> also monitor the availability of the service. If the client detects that the service is no longer available, it <span class="bcp14">MUST</span> restart the discovery process.<a href="#section-3.3.3-6" class="pilcrow">¶</a></p>
 <p id="section-3.3.3-7">The client <span class="bcp14">MUST</span> consider its ULD server unavailable when operations directed at the server persistently fail (DNS queries time out, SRP lease refresh fails, or a DNS Push session is lost). When a client currently using an infrastructure server is awake and processing Router Advertisements, it <span class="bcp14">MUST</span> check for the continued presence of the ULD RA option. However, clients are not required to wake specifically for RA reception.<a href="#section-3.3.3-7" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-8">A server that has restarted may have lost the client's registrations, which the client can detect by a change in the server's sequence number (see <a href="#sequence" class="auto internal xref">Section 3.3.1.2</a>). A client that has registered services <span class="bcp14">MUST</span> therefore re-register them when it detects that its server has restarted. How a client detects this is implementation-specific: for example, a client with a DNS Push session can use keepalives and check the server's sequence number when it re-establishes a lost session, while a client using only UDP can periodically query the server's TXT record to verify that it still responds and that the sequence number is unchanged.<a href="#section-3.3.3-8" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-8">A server that has restarted may have lost the client's registrations, so a client that has registered services <span class="bcp14">MUST</span> re-register them when it detects that its server has restarted, i.e. that the server's sequence number has changed (see <a href="#sequence" class="auto internal xref">Section 3.3.1.3</a>). How and when a client checks for this is implementation-specific: for example, a client with a DNS Push session can use keepalives and check the server's sequence number when it re-establishes a lost session, while a client using only UDP can periodically query the server's TXT record to verify that it still responds and that the sequence number is unchanged.<a href="#section-3.3.3-8" class="pilcrow">¶</a></p>
 <p id="section-3.3.3-9">As motivated in <a href="#convergence" class="auto internal xref">Appendix C</a>, clients of an ad-hoc server <span class="bcp14">MUST</span> additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server. Clients <span class="bcp14">SHOULD</span> utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it <span class="bcp14">MUST</span> re-register all its services with the new server.<a href="#section-3.3.3-9" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1835,7 +1856,57 @@ unless that server is also the ULD server for the link in question.<a href="#sec
       <h2 id="name-iana-considerations">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-8-1">Allocate <code>&lt;uld-service-name&gt;</code>, "_uld" is preferred<a href="#section-8-1" class="pilcrow">¶</a></p>
+<div id="service-name-registration">
+<section id="section-8.1">
+        <h3 id="name-service-name-registration">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-service-name-registration" class="section-name selfRef">Service Name Registration</a>
+        </h3>
+<p id="section-8.1-1">IANA is requested to add the following entry to the "Service Name and Transport Protocol Port Number Registry", using the fields required by Section 8.1.1 of <span>[<a href="#RFC6335" class="cite xref">RFC6335</a>]</span>:<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Field Name</th>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Service Name</td>
+              <td class="text-left" rowspan="1" colspan="1">uld</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Transport Protocol</td>
+              <td class="text-left" rowspan="1" colspan="1">tcp</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Assignee</td>
+              <td class="text-left" rowspan="1" colspan="1">IESG &lt;iesg@ietf.org&gt;</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Contact</td>
+              <td class="text-left" rowspan="1" colspan="1">IETF Chair &lt;chair@ietf.org&gt;</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Description</td>
+              <td class="text-left" rowspan="1" colspan="1">Unicast Local Discovery</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Reference</td>
+              <td class="text-left" rowspan="1" colspan="1">This document</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Port Number</td>
+              <td class="text-left" rowspan="1" colspan="1">None</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Assignment Notes</td>
+              <td class="text-left" rowspan="1" colspan="1">Defined TXT keys: v, pri, seq</td>
+            </tr>
+          </tbody>
+        </table>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-combined-references">
@@ -1855,7 +1926,7 @@ unless that server is also the ULD server for the link in question.<a href="#sec
 <dd class="break"></dd>
 <dt id="I-D.ietf-dnssd-tsr">[I-D.ietf-dnssd-tsr]</dt>
         <dd>
-<span class="refAuthor">Lemon, T.</span> and <span class="refAuthor">E. Dijk</span>, <span class="refTitle">"Multicast DNS conflict resolution using the Time Since Received (TSR) EDNS option"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-dnssd-tsr-03</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-tsr-03">https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-tsr-03</a>&gt;</span>. </dd>
+<span class="refAuthor">Lemon, T.</span> and <span class="refAuthor">E. Dijk</span>, <span class="refTitle">"Multicast DNS conflict resolution using the Time Since Received (TSR) EDNS option"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-dnssd-tsr-04</span>, <time datetime="2026-10-31" class="refDate">31 October 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-tsr-04">https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-tsr-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC1034">[RFC1034]</dt>
         <dd>
@@ -1868,6 +1939,10 @@ unless that server is also the ULD server for the link in question.<a href="#sec
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6335">[RFC6335]</dt>
+        <dd>
+<span class="refAuthor">Cotton, M.</span>, <span class="refAuthor">Eggert, L.</span>, <span class="refAuthor">Touch, J.</span>, <span class="refAuthor">Westerlund, M.</span>, and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"Internet Assigned Numbers Authority (IANA) Procedures for the Management of the Service Name and Transport Protocol Port Number Registry"</span>, <span class="seriesInfo">BCP 165</span>, <span class="seriesInfo">RFC 6335</span>, <span class="seriesInfo">DOI 10.17487/RFC6335</span>, <time datetime="2011-08" class="refDate">August 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6335">https://www.rfc-editor.org/rfc/rfc6335</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6762">[RFC6762]</dt>
         <dd>
@@ -1920,7 +1995,7 @@ unless that server is also the ULD server for the link in question.<a href="#sec
 <dd class="break"></dd>
 <dt id="I-D.ietf-snac-simple">[I-D.ietf-snac-simple]</dt>
         <dd>
-<span class="refAuthor">Lemon, T.</span>, <span class="refAuthor">Hui, J.</span>, and <span class="refAuthor">E. Dijk</span>, <span class="refTitle">"Automatically Connecting Stub Networks to Unmanaged Infrastructure"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-snac-simple-12</span>, <time datetime="2026-08-30" class="refDate">30 August 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-snac-simple-12">https://datatracker.ietf.org/doc/html/draft-ietf-snac-simple-12</a>&gt;</span>. </dd>
+<span class="refAuthor">Lemon, T.</span>, <span class="refAuthor">Hui, J.</span>, and <span class="refAuthor">E. Dijk</span>, <span class="refTitle">"Automatically Connecting Stub Networks to Unmanaged Infrastructure"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-snac-simple-14</span>, <time datetime="2026-11-11" class="refDate">11 November 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-snac-simple-14">https://datatracker.ietf.org/doc/html/draft-ietf-snac-simple-14</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6105">[RFC6105]</dt>
         <dd>
@@ -1965,16 +2040,39 @@ unless that server is also the ULD server for the link in question.<a href="#sec
 <p id="appendix-C-3">Convergence also needs to be maintained over time: Ad-hoc servers in particular can appear and disappear at any time, and an infrastructure server may become available after clients have already begun using an ad-hoc server. If discovery were a one-time process, clients performing it at different times could observe different sets of available servers and make different server choices, breaking convergence. Therefore, discovery of ULD servers must be an ongoing process: Clients need to monitor the availability of their chosen server, discover newly available servers, and migrate to a higher-priority server when one appears.<a href="#appendix-C-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="acknowledgments">
+<div id="sequence-rationale">
 <section id="appendix-D">
+      <h2 id="name-rationale-for-sequence-numb">
+<a href="#appendix-D" class="section-number selfRef">Appendix D. </a><a href="#name-rationale-for-sequence-numb" class="section-name selfRef">Rationale for Sequence Number Rules</a>
+      </h2>
+<p id="appendix-D-1">Every change of the preferred server causes migration work for clients. The sequence number rules specified in <a href="#sequence" class="auto internal xref">Section 3.3.1.3</a> enable clients to prefer the oldest server of a given version and priority, i.e. the one that has been available the longest, so that a new server appearing does not cause migration. The rules work within three constraints: every client must derive the same order from the DNS-SD advertisements alone; a server's value must stay fixed while it runs, so that a change signals a restart; and servers cannot be assumed to have synchronized clocks or persistent state, which rules out advertising a start time.<a href="#appendix-D-1" class="pilcrow">¶</a></p>
+<p id="appendix-D-2">The basic scheme is similar to a Lamport clock: a starting server chooses a value one step past the newest value it sees. As long as every server sees the others when it starts, the values form a single "run" of closely spaced values, and the largest gap is the remainder of the ring, between the newest and the oldest server. Because each restart moves the newest value forward, the run moves around the ring of size D over the lifetime of the network. Finding the oldest server by the largest gap rather than by absolute value means that this movement, including wrapping past D, does not affect the result. The random component R in each step serves restart detection: without it, a restarting newest server would choose its predecessor's value + 1, i.e. exactly its own previous value. R reduces this to a probability of 1 in 65536. D = 2^32 leaves ample room for steps of this size while keeping values within a common integer size.<a href="#appendix-D-2" class="pilcrow">¶</a></p>
+<p id="appendix-D-3">The ranking is not entirely stable: the oldest designation can move to a different server while the server that previously held it is still present. Because ranks are measured from the oldest server, such a <em>spurious re-ranking</em> changes every server's rank. It causes an unnecessary migration if it changes the preferred server, but is otherwise harmless. The rules and the choice of parameters aim to make spurious re-rankings rare, and in particular to avoid networks in which they occur persistently.<a href="#appendix-D-3" class="pilcrow">¶</a></p>
+<p id="appendix-D-4">The oldest server is the one at the end of the largest gap, so a spurious re-ranking means that a different gap has become the largest without the oldest server departing. This can happen in two ways: A departure can merge the two gaps adjacent to the departing server into one that exceeds the largest gap. Alternatively, a starting server can choose a value inside the largest gap that is close enough to its end to make that server itself the oldest. Within a single run, neither is a practical concern: a starting server places itself at the start of the largest gap, and it takes at least tens of thousands of restarts (while a subset of servers stays up) for another gap to grow comparably large. Spurious re-rankings therefore mainly occur after servers have chosen their values without seeing each other, in which case they choose from the range 0-W. This happens in two situations, which W affects in opposite directions:<a href="#appendix-D-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="appendix-D-5">
+<li id="appendix-D-5.1">
+          <p id="appendix-D-5.1.1">Simultaneous start: All servers start at the same time, e.g. after a power outage, and choose values scattered across the range, which can leave several large gaps of similar size. A smaller W is better here: the gaps within the range add up to at most W, while the gap spanning the rest of the ring is at least D - W. If W is at most D/2, merging gaps through departures cannot overtake the largest gap, and only the departure of the oldest server itself changes the designation. Above D/2 this is no longer guaranteed, and the chance of competing gaps grows gradually with W.<a href="#appendix-D-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="appendix-D-5.2">
+          <p id="appendix-D-5.2.1">Lone start: A single server fails to discover the existing servers when it starts, e.g. because of packet loss during discovery or a temporary network partition. Once the other servers become visible, it is designated oldest if its value fell in the half of the largest gap that precedes the oldest server, which causes a spurious re-ranking. That is roughly half the ring, so averaged over all positions of the run this happens half the time, whatever W is. What W determines is how much of the range 0-W can lie in that half. If W is at most D/2, the whole range can lie inside it, so that in some networks nearly every lone start causes a spurious re-ranking. If W is larger than D/2, the range is longer than half the ring, so it cannot lie entirely inside that half, and the probability is at most D/(2W). Joining previously separate links has a similar effect to a lone start, except that the clients on one of the links have to migrate in any case.<a href="#appendix-D-5.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
+<p id="appendix-D-6">The choice of W = 3/4 D is a compromise between the two cases. It limits the probability of a spurious re-ranking on a lone start to at most 2/3, wherever the run has moved. (A larger D would not help, because a W of at most D/2 would still leave some networks in which nearly every lone start causes a spurious re-ranking.) A simultaneous start leaves a gap of at least D/4 spanning the rest of the ring, which is usually still the largest.<a href="#appendix-D-6" class="pilcrow">¶</a></p>
+<p id="appendix-D-7">After a simultaneous start, a lone start, or the joining of links, values can end up scattered, with several gaps of similar size. In that state, a departure can easily merge two gaps into one that exceeds the largest. The split rule aims to keep every gap other than the largest below half the size of the largest, so that this cannot happen. It gives up exact age order among the other servers, but does not change which server is designated oldest, and therefore leaves the ranks of existing servers unchanged. The exception to the split rule ensures that a split does not itself cause a migration.<a href="#appendix-D-7" class="pilcrow">¶</a></p>
+<p id="appendix-D-8">Ranks are computed over all servers on the link rather than separately for each version and priority. A starting server therefore only needs to discover some existing server, of any version or priority, to choose a value within the existing run instead of from the range 0-W. This also keeps servers of the same type that restart together, e.g. after a software update, within the existing run. Ranking per priority would make lone starts more likely, and would require a server to choose a new sequence number if it changes its priority.<a href="#appendix-D-8" class="pilcrow">¶</a></p>
+<p id="appendix-D-9">Persisting the previous sequence number gives a server information about its position relative to the other servers. A server that restarts alone at its previous value + 1 lands within the existing run rather than at a random position, which avoids most spurious re-rankings from lone starts. Servers that persist their values also keep their relative order across a simultaneous restart, so their values do not become scattered. Their restarts are always detectable as well.<a href="#appendix-D-9" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-E">
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-D-1">TODO acknowledge.<a href="#appendix-D-1" class="pilcrow">¶</a></p>
+<p id="appendix-E-1">TODO acknowledge.<a href="#appendix-E-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-E">
+<section id="appendix-F">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
