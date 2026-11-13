@@ -175,9 +175,9 @@ The ULD server MUST ensure its own hostname is unique on the link. This can be a
 
 ### Server Advertisement {#advertisement}
 
-All active ULD servers MUST advertise their presence using mDNS, as a DNS-SD service instance of type `<uld-service-name>._tcp`. The service advertisement consists of:
+All active ULD servers MUST advertise their presence using mDNS, as a DNS-SD service instance of type `_uld._tcp`. The service advertisement consists of:
 
-- A PTR record at `<uld-service-name>._tcp.local.` pointing to the service instance name
+- A PTR record at `_uld._tcp.local.` pointing to the service instance name
 - An SRV record for the service instance, pointing to the server's hostname and port 53
 - A TXT record for the service instance, containing
   - a `v` key encoding the version of this specification implemented by the server as a US-ASCII decimal number in the range 1-255 (see {{version}})
@@ -287,7 +287,20 @@ unless that server is also the ULD server for the link in question.
 
 # IANA Considerations
 
-Allocate `<uld-service-name>`, "_uld" is preferred
+## Service Name Registration
+
+IANA is requested to add the following entry to the "Service Name and Transport Protocol Port Number Registry", using the fields required by Section 8.1.1 of {{!RFC6335}}:
+
+| Field Name         | Value                         |
+|--------------------|-------------------------------|
+| Service Name       | uld                           |
+| Transport Protocol | tcp                           |
+| Assignee           | IESG <iesg@ietf.org\>         |
+| Contact            | IETF Chair <chair@ietf.org\>  |
+| Description        | Unicast Local Discovery       |
+| Reference          | This document                 |
+| Port Number        | None                          |
+| Assignment Notes   | Defined TXT keys: pri         |
 
 --- back
 
