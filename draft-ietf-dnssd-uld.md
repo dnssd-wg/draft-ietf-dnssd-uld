@@ -2,7 +2,7 @@
 title: "Providing Local Unicast DNS-SD Service on Infrastructure"
 abbrev: "Unicast Local Discovery"
 category: std
-updates: 6762
+updates: 6762, 8765
 
 docname: draft-ietf-dnssd-uld-latest
 submissiontype: IETF
@@ -54,7 +54,7 @@ informative:
 
 --- abstract
 
-DNS Service Discovery provides several mechanisms whereby hosts can discover and advertise services on an IP network. Such discovery can be done using Multicast DNS (mDNS) or DNS, and advertising can be done with DNS-SD Service Registration Protocol (SRP) or mDNS. This document defines Unicast Local Discovery (ULD), a service that combines an SRP registrar, a Discovery Proxy, and an Advertising Proxy. Hosts can use a ULD server to advertise and discover services on the local link entirely via unicast SRP and DNS while remaining interoperable with hosts that use mDNS. This document updates RFC 6762.
+DNS Service Discovery provides several mechanisms whereby hosts can discover and advertise services on an IP network. Such discovery can be done using Multicast DNS (mDNS) or DNS, and advertising can be done with DNS-SD Service Registration Protocol (SRP) or mDNS. This document defines Unicast Local Discovery (ULD), a service that combines an SRP registrar, a Discovery Proxy, and an Advertising Proxy. Hosts can use a ULD server to advertise and discover services on the local link entirely via unicast SRP and DNS while remaining interoperable with hosts that use mDNS. This document updates RFC 6762 and RFC 8765.
 
 --- middle
 
@@ -73,6 +73,8 @@ A ULD server can be deployed as part of the network infrastructure, for example 
 ## Updated Specifications
 
 Section 3 of the Multicast DNS specification {{!RFC6762}} requires any DNS query for a name ending with ".local." to be sent to the mDNS multicast address. As described in {{uld}}, this document additionally allows such queries to be sent to the ULD server for the link.
+
+Section 5 of the DNS Push Notifications specification {{!RFC8765}} requires clients to use DSO running over TLS over TCP, and Section 7 requires the Strict Privacy profile of {{!RFC8310}}. For DSO sessions with a ULD server, which are confined to the local link, this document replaces both requirements with the rules in {{transports}}. These allow clients to use DSO over TCP without TLS if a TLS connection cannot be established, and specify the Opportunistic Privacy profile for TLS. DNS Push Notifications in other contexts are not affected.
 
 # Conventions and Terminology
 
@@ -133,7 +135,9 @@ A ULD server MUST support DNS over UDP, DNS over TCP, and DNS over TLS {{!RFC785
 
 On IPv6, clients MUST address ULD traffic to the server's link-local address, and a ULD server MUST refuse requests for ".local." that are not received on a link-local address, responding with RCODE 5 (REFUSED).
 
-ULD clients MAY use TLS, however clients that do support TLS SHOULD NOT fall back to plain TCP or UDP. TLS in ULD provides opportunistic encryption as described in Section 4.1 of {{!RFC7858}}. Servers MUST NOT require client certificates and MAY use self-signed server certificates. Clients SHOULD NOT reject a server's TLS certificate, as server authentication is not a goal in this context.
+Clients SHOULD use TLS, and MAY use TCP or UDP without TLS if a TLS connection cannot be established. TLS in ULD is used with the Opportunistic Privacy profile described in Section 5 of {{!RFC8310}}. Servers MUST NOT require client certificates and MAY use self-signed server certificates. Clients SHOULD NOT reject a server's TLS certificate, as server authentication is not a goal in this context.
+
+For DSO sessions with a ULD server, these rules replace the DNS Push {{!RFC8765}} requirement for clients to use TLS with the Strict Privacy profile (Sections 5 and 7 of {{!RFC8765}}).
 
 ## Protocol Operations
 
