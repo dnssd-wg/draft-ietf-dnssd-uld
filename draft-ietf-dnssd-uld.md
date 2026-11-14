@@ -175,7 +175,7 @@ ULD servers do not provide DNSSEC-signed responses, so the NSEC and NSEC3 synthe
 
 A ULD server MUST publish the contents of its ".local." zone into mDNS using an Advertising Proxy, ensuring that services registered via SRP are discoverable via mDNS. As with the Discovery Proxy, the Advertising Proxy in ULD effectively operates without name rewriting: Because the records are already in the .local domain, the rewriting operation mandated by Section 2.1.2 of {{!I-D.ietf-dnssd-advertising-proxy}} is a no-op.
 
-A ULD server MUST implement TSR {{!I-D.ietf-dnssd-tsr}} to correctly resolve conflicts that arise when the same records reach mDNS via different paths, for example when a client transitions from direct mDNS participation to using ULD.
+As required by Section 2.3 of {{!I-D.ietf-dnssd-advertising-proxy}}, the Advertising Proxy implements TSR {{!I-D.ietf-dnssd-tsr}}, which resolves conflicts that arise when the same records reach mDNS via different paths, for example when a client transitions from direct mDNS participation to using ULD.
 
 ### Administrative Records {#admin-records}
 
@@ -320,6 +320,8 @@ The client MUST consider its ULD server unavailable when operations directed at 
 A server that has restarted may have lost the client's registrations, so a client that has registered services MUST re-register them when it detects that its server has restarted, i.e. that the server's sequence number has changed (see {{sequence}}). How and when a client checks for this is implementation-specific: for example, a client with a DNS Push session can use keepalives and check the server's sequence number when it re-establishes a lost session, while a client using only UDP can periodically query the server's TXT record to verify that it still responds and that the sequence number is unchanged.
 
 As motivated in {{convergence}}, clients of an ad-hoc server MUST additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server. Clients SHOULD utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it MUST re-register all its services with the new server.
+
+A client that falls back to advertising its services directly via mDNS, whether initially or after losing its ULD server, MUST use TSR {{!I-D.ietf-dnssd-tsr}} for these advertisements, so that they do not cause spurious conflicts with copies of the same records published through a ULD server.
 
 ## IPv4 and Dual-Stack Operation {#dual-stack}
 
