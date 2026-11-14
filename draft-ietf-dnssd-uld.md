@@ -54,7 +54,7 @@ informative:
 
 --- abstract
 
-DNS Service Discovery provides several mechanisms whereby hosts can discover and advertise services on an IP network. Such discovery can be done using Multicast DNS (mDNS) or DNS, and advertising can be done with DNS-SD Service Registration Protocol (SRP) or mDNS. This document defines Unicast Local Discovery (ULD), a service that combines an SRP registrar, a Discovery Proxy, and an Advertising Proxy. Hosts can use a ULD server to advertise and discover services on the local link entirely via unicast SRP and DNS while remaining interoperable with hosts that use mDNS.
+DNS Service Discovery provides several mechanisms whereby hosts can discover and advertise services on an IP network. Such discovery can be done using Multicast DNS (mDNS) or DNS, and advertising can be done with DNS-SD Service Registration Protocol (SRP) or mDNS. This document defines Unicast Local Discovery (ULD), a service that combines an SRP registrar, a Discovery Proxy, and an Advertising Proxy. Hosts can use a ULD server to advertise and discover services on the local link entirely via unicast SRP and DNS while remaining interoperable with hosts that use mDNS. This document updates RFC 6762.
 
 --- middle
 
@@ -70,6 +70,10 @@ While each of these components can be deployed today, only when they are integra
 
 A ULD server can be deployed as part of the network infrastructure, for example on a CE router {{!RFC7084}}, or on an ad-hoc basis on devices such as SNAC Routers {{?I-D.ietf-snac-simple}} that already have the required capabilities. It can be implemented in any device that is expected to be continuously operational on a network link and has sufficient resources to provide the service.
 
+## Updated Specifications
+
+Section 3 of the Multicast DNS specification {{!RFC6762}} requires any DNS query for a name ending with ".local." to be sent to the mDNS multicast address. As described in {{uld}}, this document additionally allows such queries to be sent to the ULD server for the link.
+
 # Conventions and Terminology
 
 {::boilerplate bcp14-tagged}
@@ -84,7 +88,7 @@ Ad-hoc server:
 
 This document uses the terms "shared" and "unique" when referring to resource record sets in the sense of Section 2 of {{!RFC6762}}: A unique record set is conceptually under the sole control of a single owning device, whereas a shared record set may contain records contributed by multiple devices.
 
-# Unicast Local Discovery
+# Unicast Local Discovery {#uld}
 
 ULD provides service registration and discovery within the ".local." domain, the same domain used by mDNS {{!RFC6762}}. This ensures that ULD is a transparent replacement for mDNS from the perspective of applications and resolver libraries (see {{local-zone}} for further discussion of this design choice). Unlike mDNS, where the separate IPv4 and IPv6 multicast addresses effectively result in two independent .local namespaces (Section 20 of {{!RFC6762}}), ULD maintains a single unified .local zone per link.
 
