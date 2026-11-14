@@ -8,7 +8,7 @@
 <meta content="Ted Lemon" name="author">
 <meta content="Karsten Sperling" name="author">
 <meta content="
-       DNS Service Discovery provides several mechanisms whereby hosts can discover and advertise services on an IP network. Such discovery can be done using Multicast DNS (mDNS) or DNS, and advertising can be done with DNS-SD Service Registration Protocol (SRP) or mDNS. This document defines Unicast Local Discovery (ULD), a service that combines an SRP registrar, a Discovery Proxy, and an Advertising Proxy. Hosts can use a ULD server to advertise and discover services on the local link entirely via unicast SRP and DNS while remaining interoperable with hosts that use mDNS. 
+       DNS Service Discovery provides several mechanisms whereby hosts can discover and advertise services on an IP network. Such discovery can be done using Multicast DNS (mDNS) or DNS, and advertising can be done with DNS-SD Service Registration Protocol (SRP) or mDNS. This document defines Unicast Local Discovery (ULD), a service that combines an SRP registrar, a Discovery Proxy, and an Advertising Proxy. Hosts can use a ULD server to advertise and discover services on the local link entirely via unicast SRP and DNS while remaining interoperable with hosts that use mDNS. This document updates RFC 6762 and RFC 8765. 
     " name="description">
 <meta content="xml2rfc 3.35.0" name="generator">
 <meta content="DNSSD" name="keyword">
@@ -1230,7 +1230,7 @@ li > p:last-of-type:only-child {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Lemon &amp; Sperling</td>
-<td class="center">Expires 17 May 2027</td>
+<td class="center">Expires 18 May 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1243,15 +1243,15 @@ li > p:last-of-type:only-child {
 <dd class="internet-draft">draft-ietf-dnssd-uld-latest</dd>
 <dt class="label-updates">Updates:</dt>
 <dd class="updates">
-<a href="https://www.rfc-editor.org/rfc/rfc6762" class="eref">6762</a> (if approved)</dd>
+<a href="https://www.rfc-editor.org/rfc/rfc6762" class="eref">6762</a>, <a href="https://www.rfc-editor.org/rfc/rfc8765" class="eref">8765</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-11-13" class="published">13 November 2026</time>
+<time datetime="2026-11-14" class="published">14 November 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-05-17">17 May 2027</time></dd>
+<dd class="expires"><time datetime="2027-05-18">18 May 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1268,7 +1268,7 @@ li > p:last-of-type:only-child {
 <h1 id="title">Providing Local Unicast DNS-SD Service on Infrastructure</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">DNS Service Discovery provides several mechanisms whereby hosts can discover and advertise services on an IP network. Such discovery can be done using Multicast DNS (mDNS) or DNS, and advertising can be done with DNS-SD Service Registration Protocol (SRP) or mDNS. This document defines Unicast Local Discovery (ULD), a service that combines an SRP registrar, a Discovery Proxy, and an Advertising Proxy. Hosts can use a ULD server to advertise and discover services on the local link entirely via unicast SRP and DNS while remaining interoperable with hosts that use mDNS.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">DNS Service Discovery provides several mechanisms whereby hosts can discover and advertise services on an IP network. Such discovery can be done using Multicast DNS (mDNS) or DNS, and advertising can be done with DNS-SD Service Registration Protocol (SRP) or mDNS. This document defines Unicast Local Discovery (ULD), a service that combines an SRP registrar, a Discovery Proxy, and an Advertising Proxy. Hosts can use a ULD server to advertise and discover services on the local link entirely via unicast SRP and DNS while remaining interoperable with hosts that use mDNS. This document updates RFC 6762 and RFC 8765.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1304,7 +1304,7 @@ li > p:last-of-type:only-child {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 17 May 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 May 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1335,6 +1335,11 @@ li > p:last-of-type:only-child {
 <nav class="toc"><ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-updated-specifications" class="internal xref">Updated Specifications</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-terminology" class="internal xref">Conventions and Terminology</a></p>
@@ -1343,7 +1348,7 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-unicast-local-discovery" class="internal xref">Unicast Local Discovery</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-transports" class="internal xref">Transports</a></p>
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-transports" class="internal xref">Transports</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-protocol-operations" class="internal xref">Protocol Operations</a></p>
@@ -1372,7 +1377,7 @@ li > p:last-of-type:only-child {
                     <p id="section-toc.1-1.3.2.3.2.1.1"><a href="#section-3.3.1" class="auto internal xref">3.3.1</a>.  <a href="#name-server-advertisement" class="internal xref">Server Advertisement</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.2">
-                    <p id="section-toc.1-1.3.2.3.2.2.1"><a href="#section-3.3.2" class="auto internal xref">3.3.2</a>.  <a href="#name-infrastructure-ra-option" class="internal xref">Infrastructure RA Option</a></p>
+                    <p id="section-toc.1-1.3.2.3.2.2.1"><a href="#section-3.3.2" class="auto internal xref">3.3.2</a>.  <a href="#name-uld-server-ra-option" class="internal xref">ULD Server RA Option</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.3">
                     <p id="section-toc.1-1.3.2.3.2.3.1"><a href="#section-3.3.3" class="auto internal xref">3.3.3</a>.  <a href="#name-client-behavior" class="internal xref">Client Behavior</a></p>
@@ -1401,6 +1406,9 @@ li > p:last-of-type:only-child {
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
                 <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-service-name-registration" class="internal xref">Service Name Registration</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-ipv6-neighbor-discovery-opt" class="internal xref">IPv6 Neighbor Discovery Option</a></p>
 </li>
             </ul>
 </li>
@@ -1447,6 +1455,15 @@ li > p:last-of-type:only-child {
 <p id="section-1-3">To address this, this document defines a way of combining several existing technologies into a Unicast Local Discovery (ULD) service: an SRP registrar <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span> with its Authoritative DNS Server <span>[<a href="#RFC1034" class="cite xref">RFC1034</a>]</span> <span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span> to handle registration and discovery over unicast, and an Advertising Proxy <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span> and Discovery Proxy <span>[<a href="#RFC8766" class="cite xref">RFC8766</a>]</span> to provide interoperability with mDNS.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">While each of these components can be deployed today, only when they are integrated in a standardized way into a discoverable service can a client rely entirely on unicast discovery and cease participating in mDNS itself. From a client's perspective, ULD is a drop-in replacement for mDNS: If a ULD server is available on a particular link, the client uses it for all local advertisement and discovery on that link; otherwise it falls back to mDNS. Note that because SRP is used for registration, advertisement via ULD is limited to the record patterns defined by DNS-SD.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">A ULD server can be deployed as part of the network infrastructure, for example on a CE router <span>[<a href="#RFC7084" class="cite xref">RFC7084</a>]</span>, or on an ad-hoc basis on devices such as SNAC Routers <span>[<a href="#I-D.ietf-snac-simple" class="cite xref">I-D.ietf-snac-simple</a>]</span> that already have the required capabilities. It can be implemented in any device that is expected to be continuously operational on a network link and has sufficient resources to provide the service.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<div id="updated-specifications">
+<section id="section-1.1">
+        <h3 id="name-updated-specifications">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-updated-specifications" class="section-name selfRef">Updated Specifications</a>
+        </h3>
+<p id="section-1.1-1">Section 3 of the Multicast DNS specification <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> requires any DNS query for a name ending with ".local." to be sent to the mDNS multicast address. As described in <a href="#uld" class="auto internal xref">Section 3</a>, this document additionally allows such queries to be sent to the ULD server for the link.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">Section 5 of the DNS Push Notifications specification <span>[<a href="#RFC8765" class="cite xref">RFC8765</a>]</span> requires clients to use DSO running over TLS over TCP, and Section 7 requires the Strict Privacy profile of <span>[<a href="#RFC8310" class="cite xref">RFC8310</a>]</span>. For DSO sessions with a ULD server, which are confined to the local link, this document replaces both requirements with the rules in <a href="#transports" class="auto internal xref">Section 3.1</a>. These allow clients to use DSO over TCP without TLS if a TLS connection cannot be established, and specify the Opportunistic Privacy profile for TLS. DNS Push Notifications in other contexts are not affected.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="conventions-and-terminology">
@@ -1462,7 +1479,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <span class="break"></span><dl class="dlParallel" id="section-2-3">
         <dt id="section-2-3.1">Infrastructure server:</dt>
         <dd style="margin-left: 1.5em" id="section-2-3.2">
-          <p id="section-2-3.2.1">The ULD server is a router on the link that has been intentionally deployed as part of the network infrastructure. At most one infrastructure server is expected per link.<a href="#section-2-3.2.1" class="pilcrow">¶</a></p>
+          <p id="section-2-3.2.1">The ULD server has been intentionally deployed as part of the network infrastructure, and is designated as such by a router on the link (see <a href="#ra-option" class="auto internal xref">Section 3.3.2</a>). At most one infrastructure server is expected per link.<a href="#section-2-3.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-2-3.3">Ad-hoc server:</dt>
@@ -1474,7 +1491,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="section-2-4">This document uses the terms "shared" and "unique" when referring to resource record sets in the sense of Section 2 of <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>: A unique record set is conceptually under the sole control of a single owning device, whereas a shared record set may contain records contributed by multiple devices.<a href="#section-2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="unicast-local-discovery">
+<div id="uld">
 <section id="section-3">
       <h2 id="name-unicast-local-discovery">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-unicast-local-discovery" class="section-name selfRef">Unicast Local Discovery</a>
@@ -1580,7 +1597,8 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         </h3>
 <p id="section-3.1-1">A ULD server <span class="bcp14">MUST</span> support DNS over UDP, DNS over TCP, and DNS over TLS <span>[<a href="#RFC7858" class="cite xref">RFC7858</a>]</span>. DNS over TLS support is required by the SRP specification <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span> and is also the basis for DNS Push Notifications. All services (DNS queries, SRP registration, and DNS Push) operate on the standard ports: port 53 for UDP and TCP, port 853 for TLS. A ULD server <span class="bcp14">MUST</span> support IPv6; dual-stack requirements are addressed in <a href="#dual-stack" class="auto internal xref">Section 3.4</a>.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">On IPv6, clients <span class="bcp14">MUST</span> address ULD traffic to the server's link-local address, and a ULD server <span class="bcp14">MUST</span> refuse requests for ".local." that are not received on a link-local address, responding with RCODE 5 (REFUSED).<a href="#section-3.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1-3">ULD clients <span class="bcp14">MAY</span> use TLS, however clients that do support TLS <span class="bcp14">SHOULD NOT</span> fall back to plain TCP or UDP. TLS in ULD provides opportunistic encryption as described in Section 4.1 of <span>[<a href="#RFC7858" class="cite xref">RFC7858</a>]</span>. Servers <span class="bcp14">MUST NOT</span> require client certificates and <span class="bcp14">MAY</span> use self-signed server certificates. Clients <span class="bcp14">SHOULD NOT</span> reject a server's TLS certificate, as server authentication is not a goal in this context.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">Clients <span class="bcp14">SHOULD</span> use TLS, and <span class="bcp14">MAY</span> use TCP or UDP without TLS if a TLS connection cannot be established. TLS in ULD is used with the Opportunistic Privacy profile described in Section 5 of <span>[<a href="#RFC8310" class="cite xref">RFC8310</a>]</span>. Servers <span class="bcp14">MUST NOT</span> require client certificates and <span class="bcp14">MAY</span> use self-signed server certificates. Clients <span class="bcp14">SHOULD NOT</span> reject a server's TLS certificate, as server authentication is not a goal in this context.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">For DSO sessions with a ULD server, these rules replace the DNS Push <span>[<a href="#RFC8765" class="cite xref">RFC8765</a>]</span> requirement for clients to use TLS with the Strict Privacy profile (Sections 5 and 7 of <span>[<a href="#RFC8765" class="cite xref">RFC8765</a>]</span>).<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="protocol-operations">
@@ -1593,7 +1611,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
           <h4 id="name-registering-services">
 <a href="#section-3.2.1" class="section-number selfRef">3.2.1. </a><a href="#name-registering-services" class="section-name selfRef">Registering Services</a>
           </h4>
-<p id="section-3.2.1-1">A ULD server <span class="bcp14">MUST</span> accept service registrations via the Service Registration Protocol (SRP) <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span>. Registrations <span class="bcp14">MUST</span> use ".local." as the registration domain, matching the names that would be used if the service were advertised via mDNS. The use of any other registration domain, including default.service.arpa, is out of scope for this specification.<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.2.1-1">A ULD server <span class="bcp14">MUST</span> accept service registrations via the Service Registration Protocol (SRP) <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span>. Registrations <span class="bcp14">MUST</span> use ".local." as the registration domain, matching the names that would be used if the service were advertised via mDNS. The use of any other registration domain, including default.service.arpa, is out of scope for this specification. The server <span class="bcp14">MUST</span> reject any DNS Update message for ".local." that is not an SRP Update, responding with RCODE 5 (REFUSED).<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-2">Because the .local zone is link-scoped, clients <span class="bcp14">MUST</span> only include address records (A, AAAA) in their SRP registrations that are valid on the link, following the same rules as for mDNS responses in Section 6.2 of <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.<a href="#section-3.2.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1617,6 +1635,8 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
           </h4>
 <p id="section-3.2.3-1">The Discovery Proxy's contributions to ULD queries generally follow the answer-aggregation behavior of Section 5.6 of <span>[<a href="#RFC8766" class="cite xref">RFC8766</a>]</span>, answering from its mDNS cache when populated and otherwise issuing mDNS queries on the link. However, the behavior described there for standard DNS queries assumes that such queries are used only for one-shot operations expected to return unique records, while long-lived subscriptions are used when browsing for shared record sets. This is a reasonable assumption in the context of a generic Discovery Proxy, since off-link clients performing wide-area DNS-SD discovery will generally have the resources needed to implement DNS Push <span>[<a href="#RFC8765" class="cite xref">RFC8765</a>]</span> over TLS. In the context of ULD, DNS Push subscriptions remain <span class="bcp14">RECOMMENDED</span> when querying for shared records, but it is desirable to support constrained clients that cannot use them: Such clients <span class="bcp14">MAY</span> implement time-bounded browse operations using repeated standard DNS queries. The interval between repeated queries <span class="bcp14">MUST</span> be at least 9 seconds (90% of the 10-second TTL cap imposed by the Discovery Proxy, Section 5.5.1 of <span>[<a href="#RFC8766" class="cite xref">RFC8766</a>]</span>).<a href="#section-3.2.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.2.3-2">To support such clients, the ULD server <span class="bcp14">MUST</span> continue to issue mDNS queries for the requested records for at least 20 seconds after the most recent matching standard DNS query, as it would for records in which a local client has an active interest (Section 5.2 of <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>). Where the requested records are unique (indicated by the cache-flush bit), whether received from the link or already held in the cache, the server need issue no further mDNS queries other than to refresh them as they approach expiry. Where the records may be shared, the server responds to each query immediately from its cache, while the continued querying surfaces any additional records on the link and keeps the cache current, so that the client's successive point-in-time snapshots converge on the complete set. This effectively matches the treatment that Section 5.6 of <span>[<a href="#RFC8766" class="cite xref">RFC8766</a>]</span> describes for subscriptions.<a href="#section-3.2.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.2.3-3">In addition, the server <span class="bcp14">MUST</span> maintain an active interest in the <code>_uld._tcp</code> service instances on the link, as it would for a local client browsing for them (Section 4 of <span>[<a href="#RFC6763" class="cite xref">RFC6763</a>]</span>), including their SRV, TXT, and address records. Together with the server's own advertisement (<a href="#admin-records" class="auto internal xref">Section 3.2.5</a>), this ensures that a single query to any ULD server returns the complete server list, along with the records clients need to rank the servers.<a href="#section-3.2.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.2.3-4">ULD servers do not provide DNSSEC-signed responses, so the NSEC and NSEC3 synthesis described in Section 5.5.3 of <span>[<a href="#RFC8766" class="cite xref">RFC8766</a>]</span> does not apply, and a query for either type is answered with a NODATA response <span>[<a href="#RFC2308" class="cite xref">RFC2308</a>]</span>.<a href="#section-3.2.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="advertising-proxy">
@@ -1625,40 +1645,37 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <a href="#section-3.2.4" class="section-number selfRef">3.2.4. </a><a href="#name-advertising-proxy" class="section-name selfRef">Advertising Proxy</a>
           </h4>
 <p id="section-3.2.4-1">A ULD server <span class="bcp14">MUST</span> publish the contents of its ".local." zone into mDNS using an Advertising Proxy, ensuring that services registered via SRP are discoverable via mDNS. As with the Discovery Proxy, the Advertising Proxy in ULD effectively operates without name rewriting: Because the records are already in the .local domain, the rewriting operation mandated by Section 2.1.2 of <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span> is a no-op.<a href="#section-3.2.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.2.4-2">A ULD server <span class="bcp14">MUST</span> implement TSR <span>[<a href="#I-D.ietf-dnssd-tsr" class="cite xref">I-D.ietf-dnssd-tsr</a>]</span> to correctly resolve conflicts that arise when the same records reach mDNS via different paths, for example when a client transitions from direct mDNS participation to using ULD.<a href="#section-3.2.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.2.4-2">As required by Section 2.3 of <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span>, the Advertising Proxy implements TSR <span>[<a href="#I-D.ietf-dnssd-tsr" class="cite xref">I-D.ietf-dnssd-tsr</a>]</span>, which resolves conflicts that arise when the same records reach mDNS via different paths, for example when a client transitions from direct mDNS participation to using ULD.<a href="#section-3.2.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="administrative-records">
+<div id="admin-records">
 <section id="section-3.2.5">
           <h4 id="name-administrative-records">
 <a href="#section-3.2.5" class="section-number selfRef">3.2.5. </a><a href="#name-administrative-records" class="section-name selfRef">Administrative Records</a>
           </h4>
-<p id="section-3.2.5-1">The ".local." zone <span class="bcp14">MUST</span> contain a number of administrative records. These records have no meaning in the mDNS namespace and <span class="bcp14">MUST NOT</span> be published by the Advertising Proxy.<a href="#section-3.2.5-1" class="pilcrow">¶</a></p>
-<p id="section-3.2.5-2">As described in Section 6 of <span>[<a href="#RFC8766" class="cite xref">RFC8766</a>]</span>, the zone <span class="bcp14">MUST</span> contain:<a href="#section-3.2.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.2.5-1">In addition to the records registered by clients via SRP, the ".local." zone <span class="bcp14">MUST</span> contain a number of administrative records, described below. None of these records are published by the Advertising Proxy.<a href="#section-3.2.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.2.5-2">The zone <span class="bcp14">MUST</span> contain a copy of the server's own <code>_uld._tcp</code> service advertisement, consisting of the records listed in <a href="#advertisement" class="auto internal xref">Section 3.3.1</a>. This makes them available to ULD clients, including as part of the server list.<a href="#section-3.2.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.2.5-3">The zone <span class="bcp14">MUST</span> also contain the following records describing the zone and the services offered by the server. They exist only in the zone and are not advertised on mDNS.<a href="#section-3.2.5-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.2.5-3.1">
-              <p id="section-3.2.5-3.1.1">A SOA record for the zone<a href="#section-3.2.5-3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.2.5-4.1">
+              <p id="section-3.2.5-4.1.1">A SOA record for the zone, and exactly one NS record referencing the ULD server's own hostname, as described in Section 6 of <span>[<a href="#RFC8766" class="cite xref">RFC8766</a>]</span>.<a href="#section-3.2.5-4.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-3.2.5-3.2">
-              <p id="section-3.2.5-3.2.1">Exactly one NS record for the zone, referencing the ULD server's own hostname in .local<a href="#section-3.2.5-3.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-3.2.5-4.2">
+              <p id="section-3.2.5-4.2.1">For compatibility with client libraries that perform standard DNS Push or SRP service endpoint discovery, the following SRV records, each pointing to the server's hostname and the relevant well-known port:<a href="#section-3.2.5-4.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.2.5-4.2.2.1">
+                  <p id="section-3.2.5-4.2.2.1.1"><code>_dns-push-tls._tcp.local.</code> - port 853 (DNS Push Notifications)<a href="#section-3.2.5-4.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-3.2.5-3.3">
-              <p id="section-3.2.5-3.3.1">AAAA record(s) for that hostname, and A record(s) if applicable<a href="#section-3.2.5-3.3.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-3.2.5-4.2.2.2">
+                  <p id="section-3.2.5-4.2.2.2.1"><code>_dnssd-srp-tls._tcp.local.</code> - port 853 (SRP registration over TLS)<a href="#section-3.2.5-4.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-3.2.5-4.2.2.3">
+                  <p id="section-3.2.5-4.2.2.3.1"><code>_dnssd-srp._tcp.local.</code> - port 53 (SRP registration over UDP/TCP)<a href="#section-3.2.5-4.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
 </li>
           </ul>
-<p id="section-3.2.5-4">For compatibility with client libraries that perform standard DNS Push or SRP service endpoint discovery, the zone <span class="bcp14">MUST</span> also contain the following SRV records, each pointing to the server's hostname in .local and the relevant well-known port:<a href="#section-3.2.5-4" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.2.5-5.1">
-              <p id="section-3.2.5-5.1.1"><code>_dns-push-tls._tcp.local.</code> — port 853 (DNS Push Notifications)<a href="#section-3.2.5-5.1.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-3.2.5-5.2">
-              <p id="section-3.2.5-5.2.1"><code>_dnssd-srp-tls._tcp.local.</code> — port 853 (SRP registration over TLS)<a href="#section-3.2.5-5.2.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-3.2.5-5.3">
-              <p id="section-3.2.5-5.3.1"><code>_dnssd-srp._tcp.local.</code> — port 53 (SRP registration over UDP/TCP)<a href="#section-3.2.5-5.3.1" class="pilcrow">¶</a></p>
-</li>
-          </ul>
-<p id="section-3.2.5-6">The ULD server <span class="bcp14">MUST</span> ensure its own hostname is unique on the link. This can be achieved either by using a randomly generated name that is statistically guaranteed to be unique, or by claiming the name via mDNS probing as defined in Section 8 of <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>. In either case, the server's hostname is owned and defended directly by the server as an mDNS participant, not published on behalf of a client via the Advertising Proxy.<a href="#section-3.2.5-6" class="pilcrow">¶</a></p>
+<p id="section-3.2.5-5">Apart from the PTR record at <code>_uld._tcp.local.</code>, which is shared with the advertisements of other servers, all administrative record sets are unique, so the Discovery Proxy <span class="bcp14">SHOULD NOT</span> be consulted for queries matching them.<a href="#section-3.2.5-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1699,11 +1716,12 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
               <p id="section-3.3.1-2.4.1">At least one AAAA record for the server's hostname with a link-local IPv6 address<a href="#section-3.3.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.3.1-2.5">
-              <p id="section-3.3.1-2.5.1">At least one A record for the server's hostname with an on-link IPv4 address, if the server accepts ULD client connections over IPv4 (see <a href="#dual-stack" class="auto internal xref">Section 3.4</a>)<a href="#section-3.3.1-2.5.1" class="pilcrow">¶</a></p>
+              <p id="section-3.3.1-2.5.1">At least one A record for the server's hostname with an on-link IPv4 address, if the server accepts ULD traffic over IPv4 (see <a href="#dual-stack" class="auto internal xref">Section 3.4</a>)<a href="#section-3.3.1-2.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-3.3.1-3">The server <span class="bcp14">MAY</span> advertise other address records for its hostname (e.g. AAAA records with routable addresses); these are not relevant for ULD clients.<a href="#section-3.3.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.3.1-4">Because a ULD service instance is described by a single SRV record, its priority and weight fields <span class="bcp14">SHOULD</span> be set to zero per Section 5 of <span>[<a href="#RFC6763" class="cite xref">RFC6763</a>]</span>, and <span class="bcp14">MUST</span> be ignored when processing an advertisement. Advertisements lacking a version, priority, sequence number, or an IPv6 link-local address, or with a version, priority, or sequence number outside the specified range, are invalid and <span class="bcp14">MUST</span> be ignored.<a href="#section-3.3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.3.1-5">The server claims its hostname and service instance name as an ordinary mDNS responder, not through its Advertising Proxy, probing for them and renaming itself in the event of a conflict as specified in Sections 8 and 9 of <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.<a href="#section-3.3.1-5" class="pilcrow">¶</a></p>
 <div id="version">
 <section id="section-3.3.1.1">
             <h5 id="name-version">
@@ -1717,7 +1735,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
             <h5 id="name-server-priority">
 <a href="#section-3.3.1.2" class="section-number selfRef">3.3.1.2. </a><a href="#name-server-priority" class="section-name selfRef">Server Priority</a>
             </h5>
-<p id="section-3.3.1.2-1">Servers advertise a priority based on their deployment mode and capabilities. Priority 0 identifies an infrastructure server. Ad-hoc servers advertise a priority between 1 and 15, chosen relative to the following benchmarks:<a href="#section-3.3.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.1.2-1">Servers advertise a priority based on their deployment mode and capabilities. An infrastructure server <span class="bcp14">MUST</span> advertise priority 0. Ad-hoc servers <span class="bcp14">MUST</span> advertise a priority between 1 and 15, chosen relative to the following benchmarks:<a href="#section-3.3.1.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.3.1.2-2.1">
                 <p id="section-3.3.1.2-2.1.1">4: Unconstrained ad-hoc server on a wired network link<a href="#section-3.3.1.2-2.1.1" class="pilcrow">¶</a></p>
@@ -1747,13 +1765,126 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 </div>
 </section>
 </div>
-<div id="infrastructure-ra-option">
+<div id="ra-option">
 <section id="section-3.3.2">
-          <h4 id="name-infrastructure-ra-option">
-<a href="#section-3.3.2" class="section-number selfRef">3.3.2. </a><a href="#name-infrastructure-ra-option" class="section-name selfRef">Infrastructure RA Option</a>
+          <h4 id="name-uld-server-ra-option">
+<a href="#section-3.3.2" class="section-number selfRef">3.3.2. </a><a href="#name-uld-server-ra-option" class="section-name selfRef">ULD Server RA Option</a>
           </h4>
-<p id="section-3.3.2-1">An infrastructure ULD server <span class="bcp14">MUST</span> additionally advertise its presence by including the ULD RA option in its IPv6 Router Advertisements. The presence of the RA option signals that the sender of the RA is a ULD server. The RA source address <span class="bcp14">MUST</span> match the numerically lowest link-local address the server advertises in its AAAA records. This ensures that clients can directly use this address to reach the server and for the tiebreaker comparison defined in <a href="#client-behavior" class="auto internal xref">Section 3.3.3</a>.<a href="#section-3.3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.3.2-2">This additional advertisement mechanism serves a dual purpose: It provides IPv6 clients with a faster discovery path that does not rely on mDNS, and it enables the designation of the infrastructure ULD server to be protected by RA Guard <span>[<a href="#RFC6105" class="cite xref">RFC6105</a>]</span>. In order for this protection to be effective, IPv6-capable clients <span class="bcp14">MUST</span> use the RA option for infrastructure server discovery, either exclusively or to verify the infrastructure designation of a server discovered via DNS-SD. The DNS-SD advertisement remains necessary to enable clients already using an ad-hoc server to discover a new infrastructure server via their existing ULD connection (avoiding the need to wake for multicast RA reception), and to support IPv4-only clients.<a href="#section-3.3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.3.2-1">The ULD Server (ULDS) RA option allows a ULD server to be advertised in IPv6 Router Advertisements (RAs) <span>[<a href="#RFC4861" class="cite xref">RFC4861</a>]</span>, providing IPv6 clients with a faster discovery path that does not rely on mDNS. Its format is shown in <a href="#fig-ra-option" class="auto internal xref">Figure 2</a>.<a href="#section-3.3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.2-2">An infrastructure ULD server <span class="bcp14">MUST</span> be advertised via the ULDS option with the I flag set. In addition to faster discovery, this enables the designation of the infrastructure ULD server to be protected by RA Guard <span>[<a href="#RFC6105" class="cite xref">RFC6105</a>]</span>. In order for this protection to be effective, an IPv6-capable client <span class="bcp14">MUST NOT</span> use a server advertising priority 0 (<a href="#priority" class="auto internal xref">Section 3.3.1.2</a>) unless it holds a ULDS option that is valid for it, i.e. an unexpired option with the server's address and the I flag set, regardless of how it initially discovered the server. The DNS-SD advertisement remains necessary to enable clients already using an ad-hoc server to discover a new infrastructure server via their existing ULD connection (avoiding the need to wake for multicast RA reception), and to support IPv4-only clients.<a href="#section-3.3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.3.2-3">If the infrastructure ULD server is a router, it <span class="bcp14">SHOULD</span> directly advertise itself via the ULDS option. Alternatively, another router on the link, which need not be a default router, <span class="bcp14">MAY</span> designate it by sending a ULDS option with the server's address.<a href="#section-3.3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.2-4">An ad-hoc ULD server that is a router <span class="bcp14">MAY</span> advertise itself via the ULDS option with the I flag not set. This allows clients to bootstrap discovery by obtaining the server list from any such server via ULD, instead of browsing via mDNS (see <a href="#client-behavior" class="auto internal xref">Section 3.3.3</a>).<a href="#section-3.3.2-4" class="pilcrow">¶</a></p>
+<p id="section-3.3.2-5">The ULDS option <span class="bcp14">SHOULD</span> be included in unsolicited RAs, and <span class="bcp14">MUST</span> be included in the response to a Router Solicitation. When the server stops providing ULD service, the option <span class="bcp14">SHOULD</span> be sent with a Lifetime of zero in subsequent RAs, and then omitted. The same applies when an infrastructure server is no longer designated as such, unless it continues as an ad-hoc server and advertises itself with the I flag not set. A received option replaces any option previously received from the same router for the same server address.<a href="#section-3.3.2-5" class="pilcrow">¶</a></p>
+<span id="name-ulds-option-format"></span><div id="fig-ra-option">
+<figure id="figure-2">
+            <div id="section-3.3.2-6.1">
+              <div class="alignLeft art-svg artwork" id="section-3.3.2-6.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="272" width="528" viewBox="0 0 528 272" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                  <path d="M 8,64 L 8,256" fill="none" stroke="black"></path>
+                  <path d="M 136,64 L 136,96" fill="none" stroke="black"></path>
+                  <path d="M 264,64 L 264,96" fill="none" stroke="black"></path>
+                  <path d="M 280,64 L 280,96" fill="none" stroke="black"></path>
+                  <path d="M 296,64 L 296,96" fill="none" stroke="black"></path>
+                  <path d="M 520,64 L 520,256" fill="none" stroke="black"></path>
+                  <path d="M 8,64 L 520,64" fill="none" stroke="black"></path>
+                  <path d="M 8,96 L 520,96" fill="none" stroke="black"></path>
+                  <path d="M 8,128 L 520,128" fill="none" stroke="black"></path>
+                  <path d="M 8,256 L 520,256" fill="none" stroke="black"></path>
+                  <g class="text">
+                    <text x="16" y="36">0</text>
+                    <text x="176" y="36">1</text>
+                    <text x="336" y="36">2</text>
+                    <text x="496" y="36">3</text>
+                    <text x="16" y="52">0</text>
+                    <text x="32" y="52">1</text>
+                    <text x="48" y="52">2</text>
+                    <text x="64" y="52">3</text>
+                    <text x="80" y="52">4</text>
+                    <text x="96" y="52">5</text>
+                    <text x="112" y="52">6</text>
+                    <text x="128" y="52">7</text>
+                    <text x="144" y="52">8</text>
+                    <text x="160" y="52">9</text>
+                    <text x="176" y="52">0</text>
+                    <text x="192" y="52">1</text>
+                    <text x="208" y="52">2</text>
+                    <text x="224" y="52">3</text>
+                    <text x="240" y="52">4</text>
+                    <text x="256" y="52">5</text>
+                    <text x="272" y="52">6</text>
+                    <text x="288" y="52">7</text>
+                    <text x="304" y="52">8</text>
+                    <text x="320" y="52">9</text>
+                    <text x="336" y="52">0</text>
+                    <text x="352" y="52">1</text>
+                    <text x="368" y="52">2</text>
+                    <text x="384" y="52">3</text>
+                    <text x="400" y="52">4</text>
+                    <text x="416" y="52">5</text>
+                    <text x="432" y="52">6</text>
+                    <text x="448" y="52">7</text>
+                    <text x="464" y="52">8</text>
+                    <text x="480" y="52">9</text>
+                    <text x="496" y="52">0</text>
+                    <text x="512" y="52">1</text>
+                    <text x="68" y="84">Type</text>
+                    <text x="196" y="84">Length</text>
+                    <text x="272" y="84">I</text>
+                    <text x="288" y="84">A</text>
+                    <text x="404" y="84">Reserved</text>
+                    <text x="260" y="116">Lifetime</text>
+                    <text x="140" y="196">Server</text>
+                    <text x="200" y="196">Address</text>
+                    <text x="268" y="196">(present</text>
+                    <text x="316" y="196">if</text>
+                    <text x="336" y="196">A</text>
+                    <text x="356" y="196">is</text>
+                    <text x="388" y="196">set)</text>
+                  </g>
+                </svg><a href="#section-3.3.2-6.1.1" class="pilcrow">¶</a>
+</div>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<a href="#name-ulds-option-format" class="selfRef">ULDS Option Format</a>
+            </figcaption></figure>
+</div>
+<span class="break"></span><dl class="dlParallel" id="section-3.3.2-7">
+            <dt id="section-3.3.2-7.1">Type:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.3.2-7.2">
+              <p id="section-3.3.2-7.2.1">TBD (see <a href="#iana-nd-option" class="auto internal xref">Section 8.2</a>).<a href="#section-3.3.2-7.2.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.3.2-7.3">Length:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.3.2-7.4">
+              <p id="section-3.3.2-7.4.1">The length of the option in units of 8 octets: 1 if the A flag is not set, 3 if it is set. Receivers <span class="bcp14">MUST</span> ignore an option that is too short for the fields indicated by its flags, and <span class="bcp14">MUST</span> ignore any octets following those fields, so that future versions of this specification can append fields.<a href="#section-3.3.2-7.4.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.3.2-7.5">I:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.3.2-7.6">
+              <p id="section-3.3.2-7.6.1">Infrastructure flag. If set, the server is designated as the infrastructure server for the link.<a href="#section-3.3.2-7.6.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.3.2-7.7">A:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.3.2-7.8">
+              <p id="section-3.3.2-7.8.1">Server Address flag. If set, the option contains the Server Address field.<a href="#section-3.3.2-7.8.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.3.2-7.9">Reserved:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.3.2-7.10">
+              <p id="section-3.3.2-7.10.1"><span class="bcp14">MUST</span> be set to zero by the sender and ignored by the receiver.<a href="#section-3.3.2-7.10.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.3.2-7.11">Lifetime:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.3.2-7.12">
+              <p id="section-3.3.2-7.12.1">32-bit unsigned integer. The time in seconds, relative to the time the RA is received, after which the option is no longer valid. A value of zero means that the server is no longer advertised. The Lifetime is independent of the Router Lifetime in the RA header. Its value <span class="bcp14">SHOULD</span> by default be at least three times MaxRtrAdvInterval (Section 6.2.1 of <span>[<a href="#RFC4861" class="cite xref">RFC4861</a>]</span>), so that the advertisement survives the loss of individual RAs.<a href="#section-3.3.2-7.12.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.3.2-7.13">Server Address:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.3.2-7.14">
+              <p id="section-3.3.2-7.14.1">The IPv6 link-local address of the server. If the A flag is not set, the server's address is the source address of the RA. In either case, the server address <span class="bcp14">MUST</span> be the numerically lowest link-local address the server advertises in its AAAA records, so that clients can use it directly to reach the server and for the tiebreaker comparison defined in <a href="#client-behavior" class="auto internal xref">Section 3.3.3</a>.<a href="#section-3.3.2-7.14.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+</dl>
 </section>
 </div>
 <div id="client-behavior">
@@ -1764,10 +1895,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="section-3.3.3-1">A client that wishes to use ULD on a particular link must first discover the preferred ULD server. Discovery follows a series of steps:<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-3.3.3-2">
 <li id="section-3.3.3-2.1">
-              <p id="section-3.3.3-2.1.1">Attempt to discover an infrastructure server.<a href="#section-3.3.3-2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-3.3.3-2.1.1">Attempt to discover an infrastructure server via the ULD Server RA option (<a href="#ra-option" class="auto internal xref">Section 3.3.2</a>).<a href="#section-3.3.3-2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-3.3.3-2.2">
-              <p id="section-3.3.3-2.2.1">Failing that, browse for a list of ad-hoc servers, and determine the preferred one. Since all ULD servers <span class="bcp14">MUST</span> support IPv6, an IPv6 client need only query the IPv6 mDNS multicast address (FF02::FB) for this. Clients <span class="bcp14">MAY</span> also obtain the server list by querying any already-discovered ULD server.<a href="#section-3.3.3-2.2.1" class="pilcrow">¶</a></p>
+              <p id="section-3.3.3-2.2.1">Failing that, browse for a list of ad-hoc servers, and determine the preferred one. Since all ULD servers <span class="bcp14">MUST</span> support IPv6, an IPv6 client need only query the IPv6 mDNS multicast address (FF02::FB) for this. Clients <span class="bcp14">MAY</span> also obtain the server list by querying any already-discovered ULD server, including an ad-hoc server advertised via RA.<a href="#section-3.3.3-2.2.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-3.3.3-2.3">
               <p id="section-3.3.3-2.3.1">If no server is discovered, or if no discovered server appears to work, fall back to mDNS for .local service registration and discovery.<a href="#section-3.3.3-2.3.1" class="pilcrow">¶</a></p>
@@ -1791,11 +1922,12 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
               <p id="section-3.3.3-4.5.1">As a tiebreaker, the server's IPv6 link-local address, compared numerically. Lower values are preferred. If the server's hostname has multiple AAAA records with link-local addresses, the numerically lowest of these <span class="bcp14">MUST</span> be used.<a href="#section-3.3.3-4.5.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
-<p id="section-3.3.3-5">Note that infrastructure servers are not compared by version or rank; ties between infrastructure servers are broken by address alone, using only the information available from the ULD RA option. Since a link is expected to have at most one infrastructure server, a tiebreaker is only needed as a last resort.<a href="#section-3.3.3-5" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-6">Once a client has started to use a ULD server, it <span class="bcp14">SHOULD</span> cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client <span class="bcp14">MUST</span> also monitor the availability of the service. If the client detects that the service is no longer available, it <span class="bcp14">MUST</span> restart the discovery process.<a href="#section-3.3.3-6" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-7">The client <span class="bcp14">MUST</span> consider its ULD server unavailable when operations directed at the server persistently fail (DNS queries time out, SRP lease refresh fails, or a DNS Push session is lost). When a client currently using an infrastructure server is awake and processing Router Advertisements, it <span class="bcp14">MUST</span> check for the continued presence of the ULD RA option. However, clients are not required to wake specifically for RA reception.<a href="#section-3.3.3-7" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-5">Note that infrastructure servers are compared by address alone, not by version or rank, using only the information available from the ULD Server RA option. A link is expected to have at most one infrastructure server, so this comparison is only a last resort.<a href="#section-3.3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-6">Once a client has started to use a ULD server, it <span class="bcp14">SHOULD</span> cease its own mDNS participation on that link, and rely on the ULD server for all .local operations. The client <span class="bcp14">MUST</span> also monitor the availability of the service. If the client detects that the service is no longer available, or that its server's advertised priority has changed, it <span class="bcp14">MUST</span> restart the discovery process.<a href="#section-3.3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-7">The client <span class="bcp14">MUST</span> consider its ULD server unavailable when operations directed at the server persistently fail (DNS queries time out, SRP lease refresh fails, or a DNS Push session is lost). An IPv6 client using an infrastructure server <span class="bcp14">MUST</span> also consider it unavailable if it stops holding a valid ULD Server RA option for the server while awake and processing RAs. Clients are not required to wake specifically for RA reception, and an option that expires while a client is asleep does not by itself make the server unavailable.<a href="#section-3.3.3-7" class="pilcrow">¶</a></p>
 <p id="section-3.3.3-8">A server that has restarted may have lost the client's registrations, so a client that has registered services <span class="bcp14">MUST</span> re-register them when it detects that its server has restarted, i.e. that the server's sequence number has changed (see <a href="#sequence" class="auto internal xref">Section 3.3.1.3</a>). How and when a client checks for this is implementation-specific: for example, a client with a DNS Push session can use keepalives and check the server's sequence number when it re-establishes a lost session, while a client using only UDP can periodically query the server's TXT record to verify that it still responds and that the sequence number is unchanged.<a href="#section-3.3.3-8" class="pilcrow">¶</a></p>
 <p id="section-3.3.3-9">As motivated in <a href="#convergence" class="auto internal xref">Appendix C</a>, clients of an ad-hoc server <span class="bcp14">MUST</span> additionally keep looking for the appearance of a more-preferred server; this could be an infrastructure server or another ad-hoc server. Clients <span class="bcp14">SHOULD</span> utilize a DNS Push subscription with the current server for this purpose. When a client migrates to a new server (whether due to server failure or the appearance of a more-preferred server), it <span class="bcp14">MUST</span> re-register all its services with the new server.<a href="#section-3.3.3-9" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-10">A client that falls back to advertising its services directly via mDNS, whether initially or after losing its ULD server, <span class="bcp14">MUST</span> use TSR <span>[<a href="#I-D.ietf-dnssd-tsr" class="cite xref">I-D.ietf-dnssd-tsr</a>]</span> for these advertisements, so that they do not cause spurious conflicts with copies of the same records published through a ULD server.<a href="#section-3.3.3-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1805,9 +1937,25 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-ipv4-and-dual-stack-operati">
 <a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-ipv4-and-dual-stack-operati" class="section-name selfRef">IPv4 and Dual-Stack Operation</a>
         </h3>
-<p id="section-3.4-1">ULD is designed primarily for IPv6 operation: Infrastructure server discovery uses IPv6 Router Advertisements, and clients connect to the server's IPv6 link-local address, which provides inherent link-scoping. However, dual-stack mDNS interoperability is required to ensure that services on IPv4-only devices remain discoverable through the Discovery Proxy, and services on dual-stack ULD clients can be discovered over IPv4.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">A ULD server <span class="bcp14">MUST</span> therefore participate in mDNS on both the IPv6 multicast address (FF02::FB) and the IPv4 multicast address (224.0.0.251), unless deployed in an IPv6-only environment. The server <span class="bcp14">SHOULD</span> also accept ULD client connections over IPv4.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3">Clients <span class="bcp14">MAY</span> connect to the ULD server over IPv4 using an on-link address. When a server receives ULD traffic over IPv4, it <span class="bcp14">MUST</span> verify that the source address falls within a directly-connected subnet of the receiving interface before processing a ".local." request. Even when connecting over IPv4, clients <span class="bcp14">MUST</span> use the server's IPv6 link-local address for the tiebreaker comparison defined in <a href="#client-behavior" class="auto internal xref">Section 3.3.3</a>; this ensures all clients converge on the same server regardless of transport. If the preferred server is not reachable over IPv4, an IPv4-only client <span class="bcp14">MUST</span> fall back to mDNS. As the RA-based discovery mechanism is IPv6-only, an IPv4-only client discovers all servers, including the infrastructure server, via mDNS.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+<p id="section-3.4-1">ULD is designed primarily for IPv6 operation: Infrastructure server discovery uses IPv6 Router Advertisements, and clients connect to the server's IPv6 link-local address. However, dual-stack mDNS interoperability is required to ensure that services on IPv4-only devices remain discoverable through the Discovery Proxy, and services on dual-stack ULD clients can be discovered over IPv4.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">A ULD server <span class="bcp14">MUST</span> therefore participate in mDNS on both the IPv6 multicast address (FF02::FB) and the IPv4 multicast address (224.0.0.251), unless deployed in an IPv6-only environment.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">A ULD server <span class="bcp14">SHOULD</span> also accept ULD traffic over IPv4, and clients <span class="bcp14">MAY</span> address ULD traffic to an on-link IPv4 address of the server. Even when doing so, clients <span class="bcp14">MUST</span> use the server's IPv6 link-local address for the tiebreaker comparison defined in <a href="#client-behavior" class="auto internal xref">Section 3.3.3</a>; this ensures all clients converge on the same server regardless of transport. If the preferred server is not reachable over IPv4, an IPv4-only client <span class="bcp14">MUST</span> fall back to mDNS. As the RA-based discovery mechanism is IPv6-only, an IPv4-only client discovers all servers, including the infrastructure server, via mDNS.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+<p id="section-3.4-4">On IPv6, ULD restricts access to .local to on-link devices by requiring link-local addresses (see <a href="#transports" class="auto internal xref">Section 3.1</a>). This does not carry over to IPv4, because IPv4 hosts do not usually have an IPv4 link-local address <span>[<a href="#RFC3927" class="cite xref">RFC3927</a>]</span> when a routable address is configured on the same interface. ULD therefore uses ordinary on-link IPv4 addresses and establishes link-locality explicitly. ULD messages sent over IPv4 UDP, by clients and servers alike, <span class="bcp14">MUST</span> be sent with an IP TTL of 255, following the Generalized TTL Security Mechanism <span>[<a href="#RFC5082" class="cite xref">RFC5082</a>]</span>. This is necessary because an on-link source address can be spoofed by an off-link attacker injecting UDP requests, such as SRP Updates, that require no response. Over TCP (including TLS), the three-way handshake already prevents such spoofing, so IPv4-only clients that cannot control the IP TTL can use TCP instead.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
+<p id="section-3.4-5">A server that accepts ULD traffic over IPv4:<a href="#section-3.4-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.4-6.1">
+            <p id="section-3.4-6.1.1"><span class="bcp14">MUST</span> silently discard requests for ".local." received over IPv4 UDP with an IP TTL less than 255.<a href="#section-3.4-6.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.4-6.2">
+            <p id="section-3.4-6.2.1"><span class="bcp14">MUST NOT</span> accept TCP Fast Open <span>[<a href="#RFC7413" class="cite xref">RFC7413</a>]</span> payloads on IPv4 connections that do not use TLS, extending the corresponding requirement for SRP Updates (Section 6.1 of <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span>) to all requests.<a href="#section-3.4-6.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.4-6.3">
+            <p id="section-3.4-6.3.1"><span class="bcp14">MUST</span> refuse other IPv4 requests for ".local." with RCODE 5 (REFUSED) unless the source address is an IPv4 link-local address <span>[<a href="#RFC3927" class="cite xref">RFC3927</a>]</span> or falls within a directly-connected subnet of the receiving interface.<a href="#section-3.4-6.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.4-6.4">
+            <p id="section-3.4-6.4.1"><span class="bcp14">MUST</span> send traffic destined for IPv4 link-local addresses directly on the receiving interface (Section 2.6.2 of <span>[<a href="#RFC3927" class="cite xref">RFC3927</a>]</span>), even if it has no IPv4 link-local address of its own.<a href="#section-3.4-6.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 </section>
@@ -1818,8 +1966,8 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-operational-considerations" class="section-name selfRef">Operational Considerations</a>
       </h2>
 <p id="section-4-1">The ideal deployment state for ULD is a single infrastructure server on each link, providing streamlined discovery for all clients.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">A device that implements ULD <span class="bcp14">MAY</span> provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it advertises as an ad-hoc server with a priority as described in <a href="#advertisement" class="auto internal xref">Section 3.3.1</a>. A device <span class="bcp14">SHOULD</span> only provide ad-hoc ULD service if it is expected to remain available on the link for extended periods (e.g. because it is mains-powered and does not normally sleep), and has sufficient resources to serve all clients on the link.<a href="#section-4-2" class="pilcrow">¶</a></p>
-<p id="section-4-3">In managed networks, the infrastructure ULD server designation <span class="bcp14">MUST</span> be enabled via explicit configuration by the network operator. Where multiple managed routers are present on a link, the operator <span class="bcp14">MUST</span> ensure that at most one advertises the ULD RA option.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-2">A device that implements ULD <span class="bcp14">MAY</span> provide ULD service by default. Unless it qualifies as an infrastructure server (see below), it advertises as an ad-hoc server with a priority as described in <a href="#priority" class="auto internal xref">Section 3.3.1.2</a>. A device <span class="bcp14">SHOULD</span> only provide ad-hoc ULD service if it is expected to remain available on the link for extended periods (e.g. because it is mains-powered and does not normally sleep), and has sufficient resources to serve all clients on the link.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-3">In managed networks, the infrastructure ULD server designation <span class="bcp14">MUST</span> be enabled via explicit configuration by the network operator. Where multiple managed routers are present on a link, the operator <span class="bcp14">MUST</span> ensure that at most one infrastructure server is advertised via the ULD Server RA option (<a href="#ra-option" class="auto internal xref">Section 3.3.2</a>). Where the infrastructure server is designated by a router other than the server itself, the operator <span class="bcp14">MUST</span> also configure the server to operate as an infrastructure server, so that it advertises priority 0 (<a href="#priority" class="auto internal xref">Section 3.3.1.2</a>).<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4-4">In unmanaged networks such as home networks, CE routers <span>[<a href="#RFC7084" class="cite xref">RFC7084</a>]</span> are typically autonomously operating devices that form the basis for the network infrastructure. A CE router that provides ULD <span class="bcp14">SHOULD</span> claim infrastructure status by default, since it is already the de facto infrastructure for the link. Indications that a device is serving in this role include being the default router (sending RAs with nonzero Router Lifetime) and providing services such as DHCPv4 that are inherently singleton on the link. A device that is not clearly the primary gateway for the link <span class="bcp14">MUST NOT</span> claim infrastructure status without explicit configuration.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <p id="section-4-5">Note that Homenet <span>[<a href="#RFC7788" class="cite xref">RFC7788</a>]</span> does not define a "primary router" designation — it uses a distributed model with no single designated device. ULD's "one infrastructure server" assumption does not align well with this architecture. In Homenet networks, ULD servers may need to operate in ad-hoc mode, or Homenet could be extended to elect a ULD infrastructure server.<a href="#section-4-5" class="pilcrow">¶</a></p>
 </section>
@@ -1861,7 +2009,7 @@ unless that server is also the ULD server for the link in question.<a href="#sec
         <h3 id="name-service-name-registration">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-service-name-registration" class="section-name selfRef">Service Name Registration</a>
         </h3>
-<p id="section-8.1-1">IANA is requested to add the following entry to the "Service Name and Transport Protocol Port Number Registry", using the fields required by Section 8.1.1 of <span>[<a href="#RFC6335" class="cite xref">RFC6335</a>]</span>:<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-1">IANA is requested to add the following entry to the "Service Name and Transport Protocol Port Number Registry" <span>[<a href="#IANA-SRV" class="cite xref">IANA-SRV</a>]</span>, using the fields required by Section 8.1.1 of <span>[<a href="#RFC6335" class="cite xref">RFC6335</a>]</span>:<a href="#section-8.1-1" class="pilcrow">¶</a></p>
 <table class="center" id="table-1">
           <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
 <thead>
@@ -1907,6 +2055,31 @@ unless that server is also the ULD server for the link in question.<a href="#sec
         </table>
 </section>
 </div>
+<div id="iana-nd-option">
+<section id="section-8.2">
+        <h3 id="name-ipv6-neighbor-discovery-opt">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-ipv6-neighbor-discovery-opt" class="section-name selfRef">IPv6 Neighbor Discovery Option</a>
+        </h3>
+<p id="section-8.2-1">IANA is requested to assign a new IPv6 Neighbor Discovery option type for the ULD Server Option in the "IPv6 Neighbor Discovery Option Formats" registry <span>[<a href="#IANA-ICMP6" class="cite xref">IANA-ICMP6</a>]</span>:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-2">
+          <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Type</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">TBD</td>
+              <td class="text-left" rowspan="1" colspan="1">ULD Server Option</td>
+              <td class="text-left" rowspan="1" colspan="1">This document</td>
+            </tr>
+          </tbody>
+        </table>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-combined-references">
@@ -1940,6 +2113,14 @@ unless that server is also the ULD server for the link in question.<a href="#sec
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC3927">[RFC3927]</dt>
+        <dd>
+<span class="refAuthor">Cheshire, S.</span>, <span class="refAuthor">Aboba, B.</span>, and <span class="refAuthor">E. Guttman</span>, <span class="refTitle">"Dynamic Configuration of IPv4 Link-Local Addresses"</span>, <span class="seriesInfo">RFC 3927</span>, <span class="seriesInfo">DOI 10.17487/RFC3927</span>, <time datetime="2005-05" class="refDate">May 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3927">https://www.rfc-editor.org/rfc/rfc3927</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4861">[RFC4861]</dt>
+        <dd>
+<span class="refAuthor">Narten, T.</span>, <span class="refAuthor">Nordmark, E.</span>, <span class="refAuthor">Simpson, W.</span>, and <span class="refAuthor">H. Soliman</span>, <span class="refTitle">"Neighbor Discovery for IP version 6 (IPv6)"</span>, <span class="seriesInfo">RFC 4861</span>, <span class="seriesInfo">DOI 10.17487/RFC4861</span>, <time datetime="2007-09" class="refDate">September 2007</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4861">https://www.rfc-editor.org/rfc/rfc4861</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC6335">[RFC6335]</dt>
         <dd>
 <span class="refAuthor">Cotton, M.</span>, <span class="refAuthor">Eggert, L.</span>, <span class="refAuthor">Touch, J.</span>, <span class="refAuthor">Westerlund, M.</span>, and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"Internet Assigned Numbers Authority (IANA) Procedures for the Management of the Service Name and Transport Protocol Port Number Registry"</span>, <span class="seriesInfo">BCP 165</span>, <span class="seriesInfo">RFC 6335</span>, <span class="seriesInfo">DOI 10.17487/RFC6335</span>, <time datetime="2011-08" class="refDate">August 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6335">https://www.rfc-editor.org/rfc/rfc6335</a>&gt;</span>. </dd>
@@ -1963,6 +2144,10 @@ unless that server is also the ULD server for the link in question.<a href="#sec
 <dt id="RFC8174">[RFC8174]</dt>
         <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8310">[RFC8310]</dt>
+        <dd>
+<span class="refAuthor">Dickinson, S.</span>, <span class="refAuthor">Gillmor, D.</span>, and <span class="refAuthor">T. Reddy</span>, <span class="refTitle">"Usage Profiles for DNS over TLS and DNS over DTLS"</span>, <span class="seriesInfo">RFC 8310</span>, <span class="seriesInfo">DOI 10.17487/RFC8310</span>, <time datetime="2018-03" class="refDate">March 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8310">https://www.rfc-editor.org/rfc/rfc8310</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8490">[RFC8490]</dt>
         <dd>
@@ -1997,9 +2182,29 @@ unless that server is also the ULD server for the link in question.<a href="#sec
         <dd>
 <span class="refAuthor">Lemon, T.</span>, <span class="refAuthor">Hui, J.</span>, and <span class="refAuthor">E. Dijk</span>, <span class="refTitle">"Automatically Connecting Stub Networks to Unmanaged Infrastructure"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-snac-simple-14</span>, <time datetime="2026-11-11" class="refDate">11 November 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-snac-simple-14">https://datatracker.ietf.org/doc/html/draft-ietf-snac-simple-14</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="IANA-ICMP6">[IANA-ICMP6]</dt>
+        <dd>
+<span class="refAuthor">Internet Assigned Numbers Authority (IANA)</span>, <span class="refTitle">"Internet Control Message Protocol version 6 (ICMPv6) Parameters"</span>, <span>&lt;<a href="https://www.iana.org/assignments/icmpv6-parameters">https://www.iana.org/assignments/icmpv6-parameters</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="IANA-SRV">[IANA-SRV]</dt>
+        <dd>
+<span class="refAuthor">Internet Assigned Numbers Authority (IANA)</span>, <span class="refTitle">"Service Name and Transport Protocol Port Number Registry"</span>, <span>&lt;<a href="https://www.iana.org/assignments/service-names-port-numbers">https://www.iana.org/assignments/service-names-port-numbers</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2308">[RFC2308]</dt>
+        <dd>
+<span class="refAuthor">Andrews, M.</span>, <span class="refTitle">"Negative Caching of DNS Queries (DNS NCACHE)"</span>, <span class="seriesInfo">RFC 2308</span>, <span class="seriesInfo">DOI 10.17487/RFC2308</span>, <time datetime="1998-03" class="refDate">March 1998</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2308">https://www.rfc-editor.org/rfc/rfc2308</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5082">[RFC5082]</dt>
+        <dd>
+<span class="refAuthor">Gill, V.</span>, <span class="refAuthor">Heasley, J.</span>, <span class="refAuthor">Meyer, D.</span>, <span class="refAuthor">Savola, P., Ed.</span>, and <span class="refAuthor">C. Pignataro</span>, <span class="refTitle">"The Generalized TTL Security Mechanism (GTSM)"</span>, <span class="seriesInfo">RFC 5082</span>, <span class="seriesInfo">DOI 10.17487/RFC5082</span>, <time datetime="2007-10" class="refDate">October 2007</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5082">https://www.rfc-editor.org/rfc/rfc5082</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC6105">[RFC6105]</dt>
         <dd>
 <span class="refAuthor">Levy-Abegnoli, E.</span>, <span class="refAuthor">Van de Velde, G.</span>, <span class="refAuthor">Popoviciu, C.</span>, and <span class="refAuthor">J. Mohacsi</span>, <span class="refTitle">"IPv6 Router Advertisement Guard"</span>, <span class="seriesInfo">RFC 6105</span>, <span class="seriesInfo">DOI 10.17487/RFC6105</span>, <time datetime="2011-02" class="refDate">February 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6105">https://www.rfc-editor.org/rfc/rfc6105</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7413">[RFC7413]</dt>
+        <dd>
+<span class="refAuthor">Cheng, Y.</span>, <span class="refAuthor">Chu, J.</span>, <span class="refAuthor">Radhakrishnan, S.</span>, and <span class="refAuthor">A. Jain</span>, <span class="refTitle">"TCP Fast Open"</span>, <span class="seriesInfo">RFC 7413</span>, <span class="seriesInfo">DOI 10.17487/RFC7413</span>, <time datetime="2014-12" class="refDate">December 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7413">https://www.rfc-editor.org/rfc/rfc7413</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7788">[RFC7788]</dt>
       <dd>
